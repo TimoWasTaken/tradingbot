@@ -118,7 +118,12 @@ class DealFinder:
         self.window = int(cfg.get("price_window", 200))
         self.resale_factor = float(cfg.get("resale_factor", 0.9))
         self.sold_register = None       # optional bot.tradera.SoldRegister: real sale prices beat asking prices
-        self.min_sold_samples = int(cfg.get("tradera", {}).get("min_sold_samples", 8))
+        self.min_sold_samples = int(cfg.get("tradera", {}).get("min_sold_samples", 5))
+        # Asking prices on Blocket run well above what things sell for: across our watches the Tradera sale median
+        # was 46-79% of the Blocket ask median (typically ~55%). When no sale data exists, asks are scaled down by this.
+        self.ask_to_sold_factor = float(cfg.get("ask_to_sold_factor", 0.6))
+        # What you keep when you sell: Tradera takes ~10% plus payment fees; local cash sales cost haggling instead.
+        self.selling_cost_pct = float(cfg.get("selling_cost_pct", 12))
         self.last_reference_kind = ""
 
     def save(self) -> None:
@@ -143,18 +148,28 @@ class DealFinder:
         return float(statistics.median(prices[-self.window:])), len(prices)
 
     def reference(self, watch: dict) -> tuple[float | None, int]:
-        """(reference price, sample count). Priority: pinned reference_price, then real Tradera sale prices,
-        then the median of recent Blocket asking prices."""
+        """(reference = what the item is likely worth when SOLD, sample count).
+        Priority: a pinned reference_price; real Tradera sale prices; with only a few sales, the lower of those and
+        the scaled asking prices; otherwise Blocket asking prices scaled down by ask_to_sold_factor."""
         if watch.get("reference_price"):
             self.last_reference_kind = "your own reference price"
             return float(watch["reference_price"]), 0
+        ask, n_ask = self.asking_reference(watch)
+        ask_adj = ask * self.ask_to_sold_factor if ask else None
         if self.sold_register is not None:
-            med, n = self.sold_register.median(watch["name"], self.min_sold_samples)
-            if med:
+            med, n = self.sold_register.median(watch["name"], 1)
+            if med and n >= self.min_sold_samples:
                 self.last_reference_kind = f"real sale prices on Tradera, {n} sales"
                 return med, n
-        self.last_reference_kind = "asking prices on Blocket"
-        return self.asking_reference(watch)
+            if med and n >= 3:
+                ref = min(med, ask_adj) if ask_adj else med
+                self.last_reference_kind = f"only {n} Tradera sales, so the lower of those and adjusted Blocket asks"
+                return ref, n
+        if ask_adj:
+            self.last_reference_kind = (f"asking prices on Blocket scaled to typical sale value "
+                                        f"({self.ask_to_sold_factor * 100:.0f}% of the ask median)")
+            return ask_adj, n_ask
+        return None, n_ask
 
     @staticmethod
     def is_deal(listing: dict, watch: dict, ref: float | None, threshold: float) -> bool:
@@ -166,7 +181,7 @@ class DealFinder:
 
     def alert(self, listing: dict, watch: dict, ref: float, kind: str) -> None:
         discount = 1 - listing["price"] / ref
-        resale = ref * self.resale_factor
+        resale = ref * (1 - self.selling_cost_pct / 100.0)      # what you keep after selling costs
         margin = resale - listing["price"]
         self.state["alert_counter"] += 1
         row = {"id": self.state["alert_counter"], "time": fmt_ms(now_ms()), "ms": now_ms(), "watch": watch["name"],
@@ -179,10 +194,11 @@ class DealFinder:
         msg = (f"{listing['heading']}\n{fmt_num(listing['price'], 0)} kr in {listing['location']}"
                f"{', can be shipped' if listing['shipping'] else ''}{', buy now' if listing['buy_now'] else ''}, "
                f"posted {age_min:.0f} min ago.\n"
-               f"'{watch['name']}' usually goes for about {fmt_num(ref, 0)} kr ({self.last_reference_kind or 'reference'}), "
+               f"'{watch['name']}' usually SELLS for about {fmt_num(ref, 0)} kr (basis: {self.last_reference_kind or 'reference'}), "
                f"so this is {discount * 100:.0f}% under. "
-               f"Resell at ~{fmt_num(resale, 0)} kr = ~{fmt_num(margin, 0)} kr margin before transport and haggling.\n"
-               f"{listing['url']}")
+               f"After ~{self.selling_cost_pct:.0f}% selling costs you would keep ~{fmt_num(resale, 0)} kr = "
+               f"~{fmt_num(margin, 0)} kr margin, before transport. Check the exact model: the reference mixes all "
+               f"'{watch['name']}' listings that pass your filters.\n{listing['url']}")
         title = f"Deal #{row['id']}: {watch['name']} {discount * 100:.0f}% under" + (" (price drop)" if kind == "drop" else "")
         self.log(f"ALERT #{row['id']} [{watch['name']}] {listing['heading']} {listing['price']:.0f} kr vs ref {ref:.0f} "
                  f"({discount * 100:.0f}% under) {listing['url']}")

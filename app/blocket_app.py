@@ -52,8 +52,11 @@ def default_watches() -> list[dict]:
         w("Festool", "festool", 500, 15000, excl=["sågblad", "slippapper", "påsar", "tillbehör"], pages=2, alert_below=900),
         w("Hilti", "hilti", 500, 15000, excl=["spik", "bult", "plugg", "tillbehör"], pages=2, alert_below=900),
         w("Makita 18V", "makita 18v", 800, 6000, must=["makita"], excl=["batteri", "laddare", "bits", "sågblad", "väska", "låda"]),
-        w("Bugaboo", "bugaboo", 1000, 9000, must=["bugaboo"], excl=["tillbehör", "regnskydd", "åkpåse", "fotsack", "adapter", "liggdel"], pages=2),
-        w("Thule Chariot", "thule chariot", 1500, 12000, must=["thule"], excl=["cykelhållare", "takbox", "takräcke", "adapter"], pages=2),
+        w("Bugaboo", "bugaboo", 1500, 9000, must=["fox", "donkey", "cameleon", "buffalo", "bee", "dragonfly", "giraffe", "vagn"],
+          excl=["tillbehör", "regnskydd", "åkpåse", "fotsack", "adapter", "liggdel", "sittdel", "turtle", "resesäng", "ram", "chassi",
+                "babynest", "ståbräda", "isofix", "bilbarnstol", "base", "klädsel", "sufflett", "korg", "hjul", "väska"], pages=2),
+        w("Thule Chariot", "thule chariot", 1500, 12000, must=["chariot"],
+          excl=["cykelhållare", "takbox", "takräcke", "adapter", "kit", "hjul", "regnskydd", "tillbehör"], pages=2),
         w("Elcykel", "elcykel", 3000, 25000, must=["elcykel", "el-cykel", "e-bike"], excl=["batteri", "laddare", "cykelhållare", "kit"], pages=2),
         w("Weber Genesis", "weber genesis", 1000, 12000, must=["weber"], excl=["överdrag", "galler", "tillbehör", "kol"]),
         w("Automower", "automower", 2000, 20000, must=["automower"], excl=["knivar", "batteri", "laddstation", "kabel", "tillbehör"], pages=2),
@@ -68,7 +71,8 @@ def default_config() -> dict:
     return {"ntfy_topic": "", "poll_minutes": 10, "discount_alert_pct": 30, "location": "", "language": "sv",
             "autostart": False, "min_samples": 15, "price_window": 200, "resale_factor": 0.9,
             "request_pause_seconds": 2, "pages": 1, "tradera_app_id": "", "tradera_app_key": "",
-            "tradera": {"enabled": True, "ending_hours": 2, "auction_discount_pct": 40, "min_sold_samples": 8, "history_pages": 3},
+            "ask_to_sold_factor": 0.6, "selling_cost_pct": 12,
+            "tradera": {"enabled": True, "ending_hours": 2, "auction_discount_pct": 40, "min_sold_samples": 5, "history_pages": 8},
             "watches": default_watches()}
 
 

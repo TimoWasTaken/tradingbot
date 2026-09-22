@@ -86,9 +86,15 @@ Phones and earbuds were left out on purpose: thin margins, fakes, iCloud locks a
 `bot/tradera.py` pulls ended Tradera listings for every watch and records the winning bids in `sold.csv`. The median
 of those real sales replaces the Blocket asking-price median as the reference, so an alert says "usually sells for
 2,140 kr (69 sales)" instead of "others ask 4,000 kr". It also checks the auctions ending within two hours and pushes
-a note when the next bid is 40% or more under that value. The first run pulls three pages of history per watch, so
+a note when the next bid is 40% or more under that value. The first run pulls eight pages of history per watch, so
 most watches have a real reference within a minute; the report shows sell-through rates too, which tells you what
-does not sell at all. The first pass only learns prices, so it does not flood you with old listings. Record the flips you actually
+does not sell at all.
+
+**Asking prices are not values.** Across the default watches the Tradera sale median was only 46 to 79% of the
+Blocket asking median (typically about 55%). So when a watch has no sale data yet, the asking median is scaled by
+`ask_to_sold_factor` (0.6) before it is used, and the margin in every alert is computed after `selling_cost_pct`
+(12%, roughly Tradera's commission and payment fees). With only a few sales the bot uses the lower of the sale
+median and the scaled asks. Pin `reference_price` on a watch if you know the market better than the data. The first pass only learns prices, so it does not flood you with old listings. Record the flips you actually
 do with `py blocket.py flip --watch ... --bought ... --sold ...` and the report shows real profit next to the alerts.
 Edit `config_blocket.json` to change watches, word filters, price bands or region (`py blocket.py locations` lists
 the codes). Commands: `blocket_scan.bat`, `blocket_start.bat`, `blocket_report.bat`. Read Blocket's terms before
