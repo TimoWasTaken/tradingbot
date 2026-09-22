@@ -37,7 +37,8 @@
         "tillbehör"
       ],
       "pages": 2,
-      "alert_below": 900
+      "alert_below": 900,
+      "marketplace_url": "https://www.facebook.com/marketplace/stockholm/search?sortBy=creation_time_descend&query=festool"
     },
     {
       "name": "Hilti",
@@ -195,7 +196,8 @@
         "dragonfly",
         "giraffe",
         "vagn"
-      ]
+      ],
+      "marketplace_url": "https://www.facebook.com/marketplace/stockholm/search?sortBy=creation_time_descend&query=bugaboo"
     },
     {
       "name": "Thule barnvagn",
@@ -299,7 +301,8 @@
       "pages": 1,
       "must_words": [
         "weber"
-      ]
+      ],
+      "marketplace_url": "https://www.facebook.com/marketplace/stockholm/search?sortBy=creation_time_descend&query=weber%20genesis"
     },
     {
       "name": "Husqvarna Automower",
@@ -363,7 +366,8 @@
       "must_words": [
         "poulsen"
       ],
-      "alert_below": 1200
+      "alert_below": 1200,
+      "marketplace_url": "https://www.facebook.com/marketplace/stockholm/search?sortBy=creation_time_descend&query=louis%20poulsen"
     },
     {
       "name": "String hylla",
@@ -392,7 +396,8 @@
       "pages": 2,
       "must_words": [
         "string"
-      ]
+      ],
+      "marketplace_url": "https://www.facebook.com/marketplace/stockholm/search?sortBy=creation_time_descend&query=string%20hylla"
     },
     {
       "name": "Concept2",
@@ -420,7 +425,8 @@
       "pages": 1,
       "must_words": [
         "concept"
-      ]
+      ],
+      "marketplace_url": "https://www.facebook.com/marketplace/stockholm/search?sortBy=creation_time_descend&query=concept2"
     },
     {
       "name": "Nord keyboard",
@@ -559,5 +565,10 @@
     "history_pages": 8
   },
   "ask_to_sold_factor": 0.6,
-  "selling_cost_pct": 12
+  "selling_cost_pct": 12,
+  "marketplace": {
+    "enabled": true,
+    "hours_between_runs": 4,
+    "results_per_watch": 8
+  }
 }

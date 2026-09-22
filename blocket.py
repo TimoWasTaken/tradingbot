@@ -60,6 +60,14 @@ def make(cfg: dict, log, quiet: bool = False):
             finder.sold_register = watcher.sold
         except ValueError as e:
             log(f"Tradera disabled: {e}")
+    market = None
+    if cfg.get("marketplace", {}).get("enabled", False):
+        try:
+            from bot import marketplace as mp
+            market = mp.MarketplaceFinder(cfg, mp.ApifyClient(secrets.get("apify_token", "")), finder, log)
+        except ValueError as e:
+            log(f"Facebook Marketplace disabled: {e}")
+    finder.marketplace = market
     return finder, watcher, jdir
 
 
@@ -77,9 +85,12 @@ def cmd_run(cfg: dict, args) -> int:
     log = setup_logging(jdir / "bot.log")
     finder, watcher, _ = make(cfg, log)
     poll = int(cfg.get("poll_minutes", 10))
+    n_mp = len([w for w in cfg["watches"] if w.get("marketplace_url")])
     log(f"Blocket deal finder: {len(cfg['watches'])} watches ({', '.join(w['name'] for w in cfg['watches'])}), "
         f"checking every {poll} minutes, alert at {cfg.get('discount_alert_pct', 30)}% under the going price. "
-        f"Tradera: {'on (real sale prices + ending auctions)' if watcher else 'off'}. Push: {'on' if finder.notifier.enabled else 'off'}.")
+        f"Tradera: {'on (real sale prices + ending auctions)' if watcher else 'off'}. "
+        f"Facebook Marketplace via Apify: {f'on ({n_mp} watches, every {cfg.get('marketplace', {}).get('hours_between_runs', 4)} h)' if getattr(finder, 'marketplace', None) else 'off'}. "
+        f"Push: {'on' if finder.notifier.enabled else 'off'}.")
 
     def one_round() -> None:
         if watcher:
@@ -88,6 +99,11 @@ def cmd_run(cfg: dict, args) -> int:
             except Exception as e:  # noqa: BLE001
                 log(f"Tradera cycle failed: {e}")
         finder.cycle()
+        if getattr(finder, "marketplace", None):
+            try:
+                finder.marketplace.cycle()
+            except Exception as e:  # noqa: BLE001
+                log(f"Marketplace cycle failed: {e}")
 
     if args.once:
         one_round()

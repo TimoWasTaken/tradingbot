@@ -90,6 +90,14 @@ a note when the next bid is 40% or more under that value. The first run pulls ei
 most watches have a real reference within a minute; the report shows sell-through rates too, which tells you what
 does not sell at all.
 
+**Facebook Marketplace via Apify.** Facebook has no API and blocks logged-out search, so the deal finder never
+talks to Facebook itself. With `"marketplace": {"enabled": true}` and an Apify API token in `secrets.json`
+(`apify_token`, free account at apify.com with 5 USD of monthly credit), it asks Apify's maintained
+`facebook-marketplace-scraper` for the newest listings of each watch that has a `marketplace_url` (copy the search
+URL from your browser with your area, radius and "Date listed" sorting), a few times a day, and judges them with the
+same filters and references as Blocket listings. Apify bills per listing returned (about half a cent), so keep it to
+the heavy local categories and a handful of results per watch.
+
 **Asking prices are not values.** Across the default watches the Tradera sale median was only 46 to 79% of the
 Blocket asking median (typically about 55%). So when a watch has no sale data yet, the asking median is scaled by
 `ask_to_sold_factor` (0.6) before it is used, and the margin in every alert is computed after `selling_cost_pct`

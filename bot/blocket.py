@@ -181,7 +181,7 @@ class DealFinder:
             return True
         return bool(ref) and 1 - listing["price"] / ref >= threshold
 
-    def alert(self, listing: dict, watch: dict, ref: float, kind: str) -> None:
+    def alert(self, listing: dict, watch: dict, ref: float, kind: str, source: str = "blocket") -> None:
         discount = 1 - listing["price"] / ref
         resale = ref * (1 - self.selling_cost_pct / 100.0)      # what you keep after selling costs
         margin = resale - listing["price"]
@@ -190,62 +190,74 @@ class DealFinder:
                "ad_id": listing["ad_id"], "heading": listing["heading"], "price": listing["price"], "reference": round(ref),
                "discount_pct": round(discount * 100, 1), "expected_resale": round(resale), "expected_margin": round(margin),
                "location": listing["location"], "shipping": int(listing["shipping"]), "posted": fmt_ms(listing["posted_ms"]),
-               "url": listing["url"], "kind": kind}
+               "url": listing["url"], "kind": kind if source == "blocket" else f"{kind} ({source})"}
         self._append("alerts.csv", ALERT_FIELDS, row)
-        age_min = max(0, (now_ms() - listing["posted_ms"]) / 60000)
-        msg = (f"{listing['heading']}\n{fmt_num(listing['price'], 0)} kr in {listing['location']}"
-               f"{', can be shipped' if listing['shipping'] else ''}{', buy now' if listing['buy_now'] else ''}, "
-               f"posted {age_min:.0f} min ago.\n"
+        age_min = max(0, (now_ms() - listing["posted_ms"]) / 60000) if listing.get("posted_ms") else None
+        site = {"blocket": "Blocket", "marketplace": "Facebook Marketplace"}.get(source, source)
+        msg = (f"{listing['heading']}\n{fmt_num(listing['price'], 0)} kr in {listing['location']} on {site}"
+               f"{', can be shipped' if listing['shipping'] else ''}{', buy now' if listing['buy_now'] else ''}"
+               f"{f', posted {age_min:.0f} min ago' if age_min is not None else ''}.\n"
                f"'{watch['name']}' usually SELLS for about {fmt_num(ref, 0)} kr (basis: {self.last_reference_kind or 'reference'}), "
                f"so this is {discount * 100:.0f}% under. "
                f"After ~{self.selling_cost_pct:.0f}% selling costs you would keep ~{fmt_num(resale, 0)} kr = "
                f"~{fmt_num(margin, 0)} kr margin, before transport. Check the exact model: the reference mixes all "
                f"'{watch['name']}' listings that pass your filters.\n{listing['url']}")
-        title = f"Deal #{row['id']}: {watch['name']} {discount * 100:.0f}% under" + (" (price drop)" if kind == "drop" else "")
+        title = (f"Deal #{row['id']}: {watch['name']} {discount * 100:.0f}% under" + (" (price drop)" if kind == "drop" else "")
+                 + (f" [{site}]" if source != "blocket" else ""))
         self.log(f"ALERT #{row['id']} [{watch['name']}] {listing['heading']} {listing['price']:.0f} kr vs ref {ref:.0f} "
                  f"({discount * 100:.0f}% under) {listing['url']}")
         self.notifier.send(title, msg, priority=4, tags=["shopping_cart"])
 
-    def process_watch(self, watch: dict) -> dict:
+    def process_listings(self, watch: dict, listings: list[dict], source: str = "blocket",
+                         learning: bool | None = None) -> dict:
+        """Judges a batch of listings (from any source) against the watch: logs new ones, learns asking prices,
+        alerts on deals and price drops. Listing dicts need: ad_id, heading, price, location, posted_ms, shipping,
+        buy_now, private, url."""
         threshold = float(watch.get("discount_alert_pct", self.cfg.get("discount_alert_pct", 30))) / 100.0
-        pages = int(watch.get("pages", self.cfg.get("pages", 1)))
+        learning = getattr(self, "learning", False) if learning is None else learning
         new_count = alerts = 0
         seen = self.state["seen"]
         prices = self.state["prices"].setdefault(watch["name"], [])
-        for page in range(1, pages + 1):
-            docs = search(watch["q"], page=page, location=watch.get("location") or self.cfg.get("location")).get("docs", [])
-            for d in docs:
-                lst = parse_doc(d)
-                if lst is None:
-                    continue
-                key = f"{watch['name']}|{lst['ad_id']}"
-                ok, why = passes(lst, watch)
-                prev = seen.get(key)
-                if prev is None:
-                    new_count += 1
-                    seen[key] = {"price": lst["price"], "ms": now_ms(), "ok": ok}
-                    self._append("listings.csv", LISTING_FIELDS, {
-                        "seen": fmt_ms(now_ms()), "seen_ms": now_ms(), "watch": watch["name"], "ad_id": lst["ad_id"],
-                        "heading": lst["heading"], "price": lst["price"], "location": lst["location"],
-                        "posted": fmt_ms(lst["posted_ms"]), "posted_ms": lst["posted_ms"], "shipping": int(lst["shipping"]),
-                        "buy_now": int(lst["buy_now"]), "url": lst["url"], "passed_filters": int(ok), "reason": why})
-                    if ok:
-                        ref, n = self.reference(watch)
-                        if self.is_deal(lst, watch, ref, threshold) and not getattr(self, "learning", False):
-                            self.alert(lst, watch, ref or float(watch.get("alert_below")), "new")
-                            alerts += 1
-                        prices.append(lst["price"])          # learn AFTER judging, so a deal does not drag the reference
-                        del prices[:-self.window]
-                elif ok and lst["price"] < float(prev["price"]) * 0.999:
+        prefix = "" if source == "blocket" else f"{source}:"
+        for lst in listings:
+            key = f"{watch['name']}|{prefix}{lst['ad_id']}"
+            ok, why = passes(lst, watch)
+            prev = seen.get(key)
+            if prev is None:
+                new_count += 1
+                seen[key] = {"price": lst["price"], "ms": now_ms(), "ok": ok}
+                self._append("listings.csv", LISTING_FIELDS, {
+                    "seen": fmt_ms(now_ms()), "seen_ms": now_ms(), "watch": watch["name"], "ad_id": f"{prefix}{lst['ad_id']}",
+                    "heading": lst["heading"], "price": lst["price"], "location": lst["location"],
+                    "posted": fmt_ms(lst["posted_ms"]) if lst.get("posted_ms") else "", "posted_ms": lst.get("posted_ms", 0),
+                    "shipping": int(lst["shipping"]), "buy_now": int(lst["buy_now"]), "url": lst["url"],
+                    "passed_filters": int(ok), "reason": why})
+                if ok:
                     ref, n = self.reference(watch)
-                    prev["price"] = lst["price"]
-                    if self.is_deal(lst, watch, ref, threshold) and not prev.get("alerted_drop"):
-                        prev["alerted_drop"] = True
-                        self.alert(lst, watch, ref or float(watch.get("alert_below")), "drop")
+                    if self.is_deal(lst, watch, ref, threshold) and not learning:
+                        self.alert(lst, watch, ref or float(watch.get("alert_below")), "new", source)
                         alerts += 1
-            time.sleep(float(self.cfg.get("request_pause_seconds", 2)))
+                    prices.append(lst["price"])          # learn AFTER judging, so a deal does not drag the reference
+                    del prices[:-self.window]
+            elif ok and lst["price"] < float(prev["price"]) * 0.999:
+                ref, n = self.reference(watch)
+                prev["price"] = lst["price"]
+                if self.is_deal(lst, watch, ref, threshold) and not prev.get("alerted_drop"):
+                    prev["alerted_drop"] = True
+                    self.alert(lst, watch, ref or float(watch.get("alert_below")), "drop", source)
+                    alerts += 1
         ref, n = self.reference(watch)
         return {"new": new_count, "alerts": alerts, "reference": ref, "samples": n}
+
+    def process_watch(self, watch: dict) -> dict:
+        """Blocket: fetch the newest pages for the watch and judge them."""
+        pages = int(watch.get("pages", self.cfg.get("pages", 1)))
+        listings: list[dict] = []
+        for page in range(1, pages + 1):
+            docs = search(watch["q"], page=page, location=watch.get("location") or self.cfg.get("location")).get("docs", [])
+            listings += [x for x in (parse_doc(d) for d in docs) if x]
+            time.sleep(float(self.cfg.get("request_pause_seconds", 2)))
+        return self.process_listings(watch, listings, "blocket")
 
     def cycle(self) -> None:
         # forget ads not seen for 60 days so the state does not grow forever
