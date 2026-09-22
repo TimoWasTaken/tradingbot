@@ -221,6 +221,58 @@ def fund_section(f: dict) -> str:
             + f"<h4>Current holdings</h4><p>{esc(hold)}</p>" + pend + "<h4>Equity curve (paper)</h4>" + eq_html + sw)
 
 
+POLY = {
+    "key": "polymarket", "cfg": "config_polymarket.json", "title": "Polymarket paper bettor",
+    "subtitle": "Prediction markets, simulated bankroll of 100 USD. Paper betting since 2026-09-22.",
+    "rules": ("Scans Polymarket's public API every hour for two documented edges. (1) Favorites: buys the side priced "
+              "between 90 and 98.5 cents in liquid, non-sports markets that resolve within 45 days, 10% of bankroll per "
+              "bet, max 8 open, max 2 per event and 4 per category. Research on 588 million Polymarket trades found such "
+              "favorites paid about +0.3 to +1 cent per dollar more than their price implied, while longshots under "
+              "10 cents lost 6 to 20 cents per dollar; sports showed no such bias and is excluded. (2) Arbitrage: when "
+              "the asks of all mutually exclusive outcomes sum to less than 1, buys them all. Bets are held to "
+              "resolution; one tick of slippage is assumed on every fill. No real orders are ever placed."),
+    "backtest": ("No backtest of our own yet. The bot records a daily snapshot of every scanned market so the "
+                 "favorite-longshot bias can be measured on its own data over time (see the research command)."),
+}
+
+
+def poly_section(f: dict) -> str:
+    cfg = load_config(ROOT / f["cfg"])
+    jdir = ROOT / "journal" / f["key"]
+    start = float(cfg["capital"]["start"])
+    state = load_state(jdir)
+    bets_p, eq_p = jdir / "bets.csv", jdir / "equity.csv"
+    items, eq_html, sw = [], "<p class='small'>No data yet.</p>", ""
+    bets = pd.read_csv(bets_p) if bets_p.exists() and bets_p.stat().st_size > 0 else pd.DataFrame()
+    if eq_p.exists() and eq_p.stat().st_size > 0:
+        k = pd.read_csv(eq_p)
+        k.to_csv(OUT / "data" / "polymarket_equity.csv", index=False)
+        e = k["equity"].astype(float)
+        dd = float((e / e.cummax() - 1).min() * 100)
+        items = [("Paper bankroll", f"{n(e.iloc[-1])} USD", ""), ("Since start", f"{(e.iloc[-1] / start - 1) * 100:+.2f}%", cls(e.iloc[-1] - start)),
+                 ("Max drawdown", f"{dd:.1f}%", "neg"), ("Settled bets", str(len(bets)), "")]
+        if len(bets):
+            won = int((bets["result"] == "won").sum())
+            items += [("Win rate", f"{won / len(bets) * 100:.0f}%", ""), ("Avg per bet", f"{bets['pnl_pct'].mean():+.2f}%", cls(bets["pnl_pct"].mean()))]
+        eq_html = chart(k["ms"].to_numpy(), e.to_numpy(), start)
+    open_rows = "".join(f"<tr><td>{p['id']}</td><td>{esc(p['kind'])}</td><td>{esc(p['side_name'])}</td><td>{esc(p['question'])}</td>"
+                        f"<td>{float(p['price']):.3f}</td><td>{n(p['stake'])}</td><td>{esc(p['end_date'])}</td></tr>"
+                        for p in state.get("positions", []))
+    open_html = ("<div class='scroll'><table><tr><th>#</th><th>Kind</th><th>Side</th><th>Question</th><th>Price</th><th>Stake USD</th>"
+                 "<th>Resolves</th></tr>" + open_rows + "</table></div>") if open_rows else "<p class='small'>No open bets.</p>"
+    if len(bets):
+        bets.to_csv(OUT / "data" / "polymarket_bets.csv", index=False)
+        rows = "".join(f"<tr><td>{int(r['id'])}</td><td>{esc(r['kind'])}</td><td>{esc(r['side'])}</td><td>{esc(r['question'])}</td>"
+                       f"<td>{float(r['price']):.3f}</td><td>{n(r['stake'])}</td><td class='{cls(float(r['pnl']))}'>{float(r['pnl']):+.2f}</td>"
+                       f"<td class='{cls(float(r['pnl_pct']))}'>{float(r['pnl_pct']):+.1f}%</td><td>{esc(r['result'])}</td></tr>"
+                       for _, r in bets.tail(100).iloc[::-1].iterrows())
+        sw = ("<h4>Settled bets</h4><div class='scroll'><table><tr><th>#</th><th>Kind</th><th>Side</th><th>Question</th><th>Price</th>"
+              "<th>Stake</th><th>P/L USD</th><th>%</th><th>Result</th></tr>" + rows + "</table></div>")
+    return (f"<h2 id='polymarket'>{esc(f['title'])}</h2><p class='meta'>{esc(f['subtitle'])}</p><p><b>Rules.</b> {esc(f['rules'])}</p>"
+            f"<p class='small'><b>Backtest.</b> {esc(f['backtest'])}</p>" + (cards(items) if items else "")
+            + "<h4>Bankroll (paper)</h4>" + eq_html + "<h4>Open bets</h4>" + open_html + sw)
+
+
 def build(pub: dict) -> Path:
     (OUT / "data").mkdir(parents=True, exist_ok=True)
     for stale in (OUT / "data").glob("*.csv"):   # regenerate the data folder from scratch every time
@@ -228,10 +280,11 @@ def build(pub: dict) -> Path:
     now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
     topic = pub.get("public_topic", "")
     repo_url = f"https://github.com/{pub.get('github_user', '')}/{pub.get('repo', 'tradingbot')}"
-    nav = " · ".join(f"<a href='#{b['key']}'>{esc(b['title'])}</a>" for b in BOTS) + " · <a href='#funds'>Fund rotation bot</a>"
+    nav = (" · ".join(f"<a href='#{b['key']}'>{esc(b['title'])}</a>" for b in BOTS)
+           + " · <a href='#funds'>Fund rotation bot</a> · <a href='#polymarket'>Polymarket paper bettor</a>")
     body = [
         f"<h1>{esc(pub.get('site_title', 'Tradingbot'))}</h1>",
-        f"<p class='meta'>Four rule-based trading bots running on simulated money against real market prices. Every trade, "
+        f"<p class='meta'>Five rule-based bots running on simulated money against real market prices. Every trade, "
         f"position and equity value on this page comes straight from the bots' journals and is regenerated automatically. "
         f"Source code: <a href='{esc(repo_url)}'>{esc(repo_url)}</a>. Last update: {now} (Stockholm time). {nav}</p>",
         "<div class='verdict'><b>Disclaimer.</b> This is a hobby project and a learning exercise. Everything here is paper "
@@ -253,6 +306,7 @@ def build(pub: dict) -> Path:
     for b in BOTS:
         body.append(bot_section(b))
     body.append(fund_section(FUND))
+    body.append(poly_section(POLY))
     body.append("<h2>Method notes</h2><p class='small'>Signals are always generated on a closed bar and executed on the next bar's "
                 "open (or the next close for funds), so no look-ahead. Fees and slippage are deducted on every simulated trade. "
                 "Stops are checked against each bar's low in backtests and against the latest price in live paper trading. "

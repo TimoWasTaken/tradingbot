@@ -9,6 +9,8 @@ Four rule-based trading bots, built as a learning project, running on simulated 
 | **US stocks bot** | 40 US large caps | daily | Same, for New York |
 | **Fund rotation bot** | 6 broad asset classes | monthly | Dual momentum between commission-free funds |
 
+| **Polymarket paper bettor** | Prediction markets | hourly | Bets simulated money on two documented edges, measures if they are real |
+
 Live track record (regenerated every evening): **https://timowastaken.github.io/tradingbot/**
 Public signal feed: ntfy topic `tradingbot-signals-7k2m9` (see below).
 
@@ -37,6 +39,26 @@ while equity is more than 10% below its peak.
 The fund rotation bot (`bot/rotation.py`) is different: at each month-end close it ranks six asset classes by their
 average 3/6/12-month return, holds the top two equal-weighted, and parks any slot that does not beat short-term bonds in
 bonds. It is measured on US ETFs with 20 years of history and its signals name commission-free Avanza funds.
+
+### Polymarket paper bettor
+
+`bot/polymarket.py` scans Polymarket's public Gamma API every hour and bets a simulated 100 USD bankroll on two
+edges that the academic literature documents:
+
+- **Favorites.** A study of 588 million Polymarket trades (arXiv 2609.12878) found contracts bought at 90 cents or
+  more paid about +0.3 to +1 cent per dollar more than their price implied (strongest in Politics and Crypto), while
+  longshots under 10 cents lost 6 to 20 cents per dollar. Sports showed no such bias. The bot buys the side priced
+  90 to 98.5 cents in liquid non-sports markets resolving within 45 days, 10% of bankroll per bet, capped per event
+  and category, and holds to resolution.
+- **Arbitrage.** When the asks of all mutually exclusive outcomes of an event sum to less than 1 (or YES ask + NO ask
+  in a binary market), buying them all locks in the difference. Such gaps are rare and taken by fast bots; the paper
+  bettor mostly measures how often a slow hourly scan still catches one.
+
+It also stores a daily snapshot of every scanned market; `py polymarket.py research` later joins those with the
+resolutions to measure the favorite-longshot bias on the bot's own data. Commands: `polymarket_scan.bat` (what it
+would bet on now), `polymarket_start.bat`, `polymarket_report.bat`. Nothing is ever sent to Polymarket: no wallet, no
+orders. Prediction markets are betting, not investing; they are zero-sum, may be unlicensed gambling where you live,
+and winnings may be taxable.
 
 ---
 
