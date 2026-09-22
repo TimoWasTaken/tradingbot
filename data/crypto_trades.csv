@@ -1,2 +1,2 @@
-id,symbol,strategy,entry_time,entry_price,quantity,cost,exit_time,exit_price,proceeds,pnl,pnl_pct,fees,exit_reason,bars_held
-1,BTCUSDT,Mean reversion,2026-09-11 02:00,76620.59115,0.0001238635705827,9.5,2026-09-13 22:00,77249.985685,9.5589,0.0589,0.62,0.0191,signal,17
+id,symbol,strategy,entry_time,entry_ms,entry_price,qty,cost,exit_time,exit_ms,exit_price,proceeds,pnl,pnl_pct,fees,reason,bars
+1,BTCUSDT,Mean reversion,2026-09-11 02:00,1789084807582,76620.59115,0.0001238635705827,9.5,2026-09-13 22:00,1789329624344,77249.985685,9.5589,0.0589,0.62,0.0191,signal,17
