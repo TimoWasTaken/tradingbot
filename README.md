@@ -74,10 +74,12 @@ average and best profit, which bookmakers were involved, and an upper-bound SEK-
 ### Blocket deal finder
 
 `bot/blocket.py` is the one tool here that competes with people instead of with bots. It polls Blocket's public
-search JSON for a list of watches (PlayStation 5, iPhone 15, Makita tools, ...), learns the going asking price per
-watch from the listings it sees (median of the last 200 that pass the word filters), and pushes a notification the
-moment a new listing appears at least 30% under that level, or an existing one drops to it, with an estimated resale
-margin. The first pass only learns prices, so it does not flood you with old listings. Record the flips you actually
+search JSON for a list of watches (Festool and Hilti tools, Bugaboo and Thule strollers, e-bikes, Weber grills,
+Automower, Louis Poulsen and String design, Concept2 rowers, Nord keyboards, Fender guitars, camera lenses), learns
+the going asking price per watch from the listings it sees (median of the last 200 that pass the word filters), and
+pushes a notification the moment a new listing appears at least 30% under that level, or an existing one drops to
+it, with an estimated resale margin. Brand watches with varied listings can use a hard `alert_below` price instead.
+Phones and earbuds were left out on purpose: thin margins, fakes, iCloud locks and stolen goods. The first pass only learns prices, so it does not flood you with old listings. Record the flips you actually
 do with `py blocket.py flip --watch ... --bought ... --sold ...` and the report shows real profit next to the alerts.
 Edit `config_blocket.json` to change watches, word filters, price bands or region (`py blocket.py locations` lists
 the codes). Commands: `blocket_scan.bat`, `blocket_start.bat`, `blocket_report.bat`. Read Blocket's terms before

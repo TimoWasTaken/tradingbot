@@ -142,6 +142,14 @@ class DealFinder:
             return None, len(prices)
         return float(statistics.median(prices[-self.window:])), len(prices)
 
+    @staticmethod
+    def is_deal(listing: dict, watch: dict, ref: float | None, threshold: float) -> bool:
+        """A deal is either far enough under the learned reference, or under a hard 'alert_below' price
+        (useful for brand watches like 'Festool' where the listings are too varied for one reference)."""
+        if watch.get("alert_below") and listing["price"] <= float(watch["alert_below"]):
+            return True
+        return bool(ref) and 1 - listing["price"] / ref >= threshold
+
     def alert(self, listing: dict, watch: dict, ref: float, kind: str) -> None:
         discount = 1 - listing["price"] / ref
         resale = ref * self.resale_factor
@@ -190,17 +198,17 @@ class DealFinder:
                         "buy_now": int(lst["buy_now"]), "url": lst["url"], "passed_filters": int(ok), "reason": why})
                     if ok:
                         ref, n = self.reference(watch)
-                        if ref and 1 - lst["price"] / ref >= threshold and not getattr(self, "learning", False):
-                            self.alert(lst, watch, ref, "new")
+                        if self.is_deal(lst, watch, ref, threshold) and not getattr(self, "learning", False):
+                            self.alert(lst, watch, ref or float(watch.get("alert_below")), "new")
                             alerts += 1
                         prices.append(lst["price"])          # learn AFTER judging, so a deal does not drag the reference
                         del prices[:-self.window]
                 elif ok and lst["price"] < float(prev["price"]) * 0.999:
                     ref, n = self.reference(watch)
                     prev["price"] = lst["price"]
-                    if ref and 1 - lst["price"] / ref >= threshold and not prev.get("alerted_drop"):
+                    if self.is_deal(lst, watch, ref, threshold) and not prev.get("alerted_drop"):
                         prev["alerted_drop"] = True
-                        self.alert(lst, watch, ref, "drop")
+                        self.alert(lst, watch, ref or float(watch.get("alert_below")), "drop")
                         alerts += 1
             time.sleep(float(self.cfg.get("request_pause_seconds", 2)))
         ref, n = self.reference(watch)
