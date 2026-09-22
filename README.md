@@ -60,6 +60,17 @@ would bet on now), `polymarket_start.bat`, `polymarket_report.bat`. Nothing is e
 orders. Prediction markets are betting, not investing; they are zero-sum, may be unlicensed gambling where you live,
 and winnings may be taxable.
 
+### Sports arbitrage measurement
+
+`bot/sportsarb.py` measures, without betting, how much "sure bet" money exists at Swedish-licensed bookmakers:
+twice a day it pulls head-to-head odds for seven leagues from [The Odds API](https://the-odds-api.com) (free key,
+500 credits a month, one credit per sport per scan), finds the best odds per outcome, and logs every event's margin
+and every arbitrage (sum of 1/odds below 1) with the stake split for a given capital. Two sets are tracked: Swedish-
+licensed books only (Unibet, Betsson, NordicBet, LeoVegas, Coolbet, Bet365, William Hill) and all books including
+Pinnacle and the Betfair exchange as a reference. `sportsarb_report.bat` turns the log into arbitrages per week,
+average and best profit, which bookmakers were involved, and an upper-bound SEK-per-week estimate. Put the key in
+`secrets.json` as `odds_api_key`. Commands: `sportsarb_scan.bat`, `sportsarb_start.bat`, `sportsarb_report.bat`.
+
 ---
 
 ## Backtest results (hypothetical, computed after the fact)

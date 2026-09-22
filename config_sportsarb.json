@@ -1,0 +1,49 @@
+{
+  "journal": "sportsarb",
+  "sports": [
+    "soccer_epl",
+    "soccer_sweden_allsvenskan",
+    "soccer_uefa_champs_league",
+    "icehockey_nhl",
+    "icehockey_sweden_hockey_league",
+    "basketball_nba",
+    "americanfootball_nfl"
+  ],
+  "bookmakers_se": [
+    "unibet_se",
+    "betsson",
+    "nordicbet",
+    "leovegas_se",
+    "coolbet",
+    "bet365",
+    "williamhill"
+  ],
+  "bookmakers_extra": [
+    "pinnacle",
+    "betfair_ex_eu",
+    "marathonbet"
+  ],
+  "bookmaker_names": {
+    "unibet_se": "Unibet",
+    "betsson": "Betsson",
+    "nordicbet": "NordicBet",
+    "leovegas_se": "LeoVegas",
+    "coolbet": "Coolbet",
+    "bet365": "Bet365",
+    "williamhill": "William Hill",
+    "pinnacle": "Pinnacle",
+    "betfair_ex_eu": "Betfair Exchange",
+    "marathonbet": "Marathonbet"
+  },
+  "capital_sek": 10000,
+  "min_profit_pct": 0.3,
+  "scan_hours": [
+    9,
+    18
+  ],
+  "ntfy": {
+    "server": "https://ntfy.sh",
+    "public_topic": "tradingbot-signals-7k2m9",
+    "public_url": "https://timowastaken.github.io/tradingbot/"
+  }
+}
