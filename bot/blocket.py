@@ -117,6 +117,9 @@ class DealFinder:
         self.min_samples = int(cfg.get("min_samples", 15))
         self.window = int(cfg.get("price_window", 200))
         self.resale_factor = float(cfg.get("resale_factor", 0.9))
+        self.sold_register = None       # optional bot.tradera.SoldRegister: real sale prices beat asking prices
+        self.min_sold_samples = int(cfg.get("tradera", {}).get("min_sold_samples", 8))
+        self.last_reference_kind = ""
 
     def save(self) -> None:
         tmp = self.state_path.with_suffix(".tmp")
@@ -132,14 +135,26 @@ class DealFinder:
                 w.writeheader()
             w.writerow(row)
 
-    def reference(self, watch: dict) -> tuple[float | None, int]:
-        """(reference price, sample count). A pinned reference_price wins; otherwise the median of recent asks."""
+    def asking_reference(self, watch: dict) -> tuple[float | None, int]:
+        """Median of recent asking prices on Blocket for this watch."""
         prices = self.state["prices"].get(watch["name"], [])
-        if watch.get("reference_price"):
-            return float(watch["reference_price"]), len(prices)
         if len(prices) < self.min_samples:
             return None, len(prices)
         return float(statistics.median(prices[-self.window:])), len(prices)
+
+    def reference(self, watch: dict) -> tuple[float | None, int]:
+        """(reference price, sample count). Priority: pinned reference_price, then real Tradera sale prices,
+        then the median of recent Blocket asking prices."""
+        if watch.get("reference_price"):
+            self.last_reference_kind = "your own reference price"
+            return float(watch["reference_price"]), 0
+        if self.sold_register is not None:
+            med, n = self.sold_register.median(watch["name"], self.min_sold_samples)
+            if med:
+                self.last_reference_kind = f"real sale prices on Tradera, {n} sales"
+                return med, n
+        self.last_reference_kind = "asking prices on Blocket"
+        return self.asking_reference(watch)
 
     @staticmethod
     def is_deal(listing: dict, watch: dict, ref: float | None, threshold: float) -> bool:
@@ -164,7 +179,8 @@ class DealFinder:
         msg = (f"{listing['heading']}\n{fmt_num(listing['price'], 0)} kr in {listing['location']}"
                f"{', can be shipped' if listing['shipping'] else ''}{', buy now' if listing['buy_now'] else ''}, "
                f"posted {age_min:.0f} min ago.\n"
-               f"Going asking price for '{watch['name']}': about {fmt_num(ref, 0)} kr, so this is {discount * 100:.0f}% under. "
+               f"'{watch['name']}' usually goes for about {fmt_num(ref, 0)} kr ({self.last_reference_kind or 'reference'}), "
+               f"so this is {discount * 100:.0f}% under. "
                f"Resell at ~{fmt_num(resale, 0)} kr = ~{fmt_num(margin, 0)} kr margin before transport and haggling.\n"
                f"{listing['url']}")
         title = f"Deal #{row['id']}: {watch['name']} {discount * 100:.0f}% under" + (" (price drop)" if kind == "drop" else "")

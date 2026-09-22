@@ -513,5 +513,12 @@
   ],
   "ntfy": {
     "server": "https://ntfy.sh"
+  },
+  "tradera": {
+    "enabled": true,
+    "ending_hours": 2,
+    "auction_discount_pct": 40,
+    "min_sold_samples": 8,
+    "history_pages": 3
   }
 }

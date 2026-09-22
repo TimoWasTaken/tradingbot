@@ -46,14 +46,27 @@ def setup_logging(path: Path):
 
 
 def make(cfg: dict, log, quiet: bool = False):
+    """Returns (DealFinder, TraderaWatcher or None, journal dir). Tradera is optional: no key, no Tradera."""
     secrets = load_secrets()
     jdir = ROOT / "journal" / cfg.get("journal", "blocket")
     notifier = Notifier(cfg.get("ntfy", {}).get("server", "https://ntfy.sh"), "" if quiet else secrets.get("ntfy_topic", ""), log)
-    return bl.DealFinder(cfg, jdir, notifier, log), jdir
+    finder = bl.DealFinder(cfg, jdir, notifier, log)
+    watcher = None
+    if cfg.get("tradera", {}).get("enabled", True):
+        try:
+            from bot import tradera as tr
+            api = tr.TraderaAPI(secrets.get("tradera_app_id", ""), secrets.get("tradera_app_key", ""))
+            watcher = tr.TraderaWatcher(cfg, api, jdir, notifier, log, blocket_reference=finder.asking_reference)
+            finder.sold_register = watcher.sold
+        except ValueError as e:
+            log(f"Tradera disabled: {e}")
+    return finder, watcher, jdir
 
 
 def cmd_scan(cfg: dict, args) -> int:
-    finder, _ = make(cfg, print, quiet=True)
+    finder, watcher, _ = make(cfg, print, quiet=True)
+    if watcher:
+        watcher.cycle()
     finder.cycle()
     return 0
 
@@ -62,18 +75,27 @@ def cmd_run(cfg: dict, args) -> int:
     jdir = ROOT / "journal" / cfg.get("journal", "blocket")
     jdir.mkdir(parents=True, exist_ok=True)
     log = setup_logging(jdir / "bot.log")
-    finder, _ = make(cfg, log)
+    finder, watcher, _ = make(cfg, log)
     poll = int(cfg.get("poll_minutes", 10))
     log(f"Blocket deal finder: {len(cfg['watches'])} watches ({', '.join(w['name'] for w in cfg['watches'])}), "
-        f"checking every {poll} minutes, alert at {cfg.get('discount_alert_pct', 30)}% under the going asking price. "
-        f"Push: {'on' if finder.notifier.enabled else 'off'}.")
-    if args.once:
+        f"checking every {poll} minutes, alert at {cfg.get('discount_alert_pct', 30)}% under the going price. "
+        f"Tradera: {'on (real sale prices + ending auctions)' if watcher else 'off'}. Push: {'on' if finder.notifier.enabled else 'off'}.")
+
+    def one_round() -> None:
+        if watcher:
+            try:
+                watcher.cycle()
+            except Exception as e:  # noqa: BLE001
+                log(f"Tradera cycle failed: {e}")
         finder.cycle()
+
+    if args.once:
+        one_round()
         return 0
     try:
         while True:
             try:
-                finder.cycle()
+                one_round()
             except Exception as e:  # noqa: BLE001
                 log(f"Cycle failed: {e}")
                 log(traceback.format_exc().strip().splitlines()[-1])
@@ -103,19 +125,28 @@ def cmd_report(cfg: dict, args) -> int:
     listings = bl.load_csv(jdir, "listings.csv", bl.LISTING_FIELDS)
     alerts = bl.load_csv(jdir, "alerts.csv", bl.ALERT_FIELDS)
     flips = bl.load_csv(jdir, "flips.csv", bl.FLIP_FIELDS)
-    finder, _ = make(cfg, print, quiet=True)
-    print(f"Listings seen: {len(listings)}, deals alerted: {len(alerts)}, flips recorded: {len(flips)}")
+    finder, watcher, _ = make(cfg, print, quiet=True)
+    sold = bl.load_csv(jdir, "sold.csv", ["recorded", "watch", "item_id", "title", "item_type", "final_price", "bids", "end_date", "url"])
+    auctions = bl.load_csv(jdir, "auction_alerts.csv", ["id", "time", "ms", "watch", "item_id", "title", "current_bid", "next_bid",
+                                                        "reference", "reference_kind", "discount_pct", "bids", "ends", "minutes_left", "url"])
+    print(f"Listings seen: {len(listings)}, deals alerted: {len(alerts)}, Tradera sales recorded: {len(sold)}, "
+          f"auction alerts: {len(auctions)}, flips recorded: {len(flips)}")
     rows = ""
     for w in cfg["watches"]:
         ref, n = finder.reference(w)
+        kind = finder.last_reference_kind
         sub = listings[listings["watch"] == w["name"]] if len(listings) else listings
         ok = sub[sub["passed_filters"] == 1] if len(sub) else sub
         a = alerts[alerts["watch"] == w["name"]] if len(alerts) else alerts
+        s = sold[sold["watch"] == w["name"]] if len(sold) else sold
+        sp = pd.to_numeric(s["final_price"], errors="coerce") if len(s) else pd.Series(dtype=float)
+        sp = sp[sp > 0]
         p = pd.to_numeric(ok["price"], errors="coerce") if len(ok) else pd.Series(dtype=float)
-        print(f"  {w['name']:24} seen {len(sub):4} (passed {len(ok):4})  ref {(f'{ref:,.0f} kr' if ref else 'learning'):>12}  "
-              f"p25 {(f'{p.quantile(0.25):,.0f}' if len(p) else '-'):>8}  deals {len(a)}")
-        rows += (f"<tr><td>{esc(w['name'])}</td><td>{len(sub)}</td><td>{len(ok)}</td><td>{fmt_num(ref, 0) + ' kr' if ref else 'learning'}</td>"
-                 f"<td>{fmt_num(p.quantile(0.25), 0) if len(p) else '–'}</td><td>{fmt_num(p.median(), 0) if len(p) else '–'}</td><td>{len(a)}</td></tr>")
+        print(f"  {w['name']:20} Blocket asks {len(ok):4} med {(f'{p.median():,.0f}' if len(p) else '-'):>7} | Tradera sold {len(sp):4} "
+              f"med {(f'{sp.median():,.0f}' if len(sp) else '-'):>7} | ref {(f'{ref:,.0f} kr' if ref else 'learning'):>10} ({kind}) | deals {len(a)}")
+        rows += (f"<tr><td>{esc(w['name'])}</td><td>{len(ok)}</td><td>{fmt_num(p.median(), 0) if len(p) else '–'}</td>"
+                 f"<td>{len(sp)}</td><td>{fmt_num(sp.median(), 0) if len(sp) else '–'}</td>"
+                 f"<td>{fmt_num(ref, 0) + ' kr' if ref else 'learning'}</td><td>{esc(kind)}</td><td>{len(a)}</td></tr>")
     arows = "".join(f"<tr><td>{int(r['id'])}</td><td>{esc(r['time'])}</td><td>{esc(r['watch'])}</td><td><a href='{esc(r['url'])}'>{esc(r['heading'])}</a></td>"
                     f"<td>{fmt_num(r['price'], 0)}</td><td>{fmt_num(r['reference'], 0)}</td><td>{float(r['discount_pct']):.0f}%</td>"
                     f"<td>{fmt_num(r['expected_margin'], 0)}</td><td>{esc(r['location'])}</td><td>{'yes' if int(r['shipping']) else ''}</td></tr>"
@@ -127,8 +158,14 @@ def cmd_report(cfg: dict, args) -> int:
     body = ("<h1>Blocket deal finder</h1>"
             f"<p class='meta'>{len(listings)} listings seen, {len(alerts)} deals alerted, {len(flips)} flips recorded "
             f"(total profit {fmt_num(total_profit, 0)} kr).</p>"
-            "<h2>Watches</h2><div class='scroll'><table><tr><th>Watch</th><th>Seen</th><th>Passed filters</th><th>Reference</th>"
-            "<th>25th percentile</th><th>Median</th><th>Deals</th></tr>" + rows + "</table></div>"
+            "<h2>Watches</h2><div class='scroll'><table><tr><th>Watch</th><th>Blocket asks</th><th>Ask median</th><th>Tradera sales</th>"
+            "<th>Sold median</th><th>Reference used</th><th>Kind</th><th>Deals</th></tr>" + rows + "</table></div>"
+            "<h2>Auction alerts (Tradera, ending soon and cheap)</h2><div class='scroll'><table><tr><th>#</th><th>Time</th><th>Watch</th>"
+            "<th>Listing</th><th>Next bid</th><th>Reference</th><th>Under</th><th>Bids</th><th>Ends</th></tr>"
+            + "".join(f"<tr><td>{int(r['id'])}</td><td>{esc(r['time'])}</td><td>{esc(r['watch'])}</td><td><a href='{esc(r['url'])}'>{esc(r['title'])}</a></td>"
+                      f"<td>{fmt_num(r['next_bid'], 0)}</td><td>{fmt_num(r['reference'], 0)}</td><td>{float(r['discount_pct']):.0f}%</td>"
+                      f"<td>{int(r['bids'])}</td><td>{esc(r['ends'])}</td></tr>" for _, r in auctions.iloc[::-1].head(200).iterrows())
+            + "</table></div>"
             "<h2>Deals alerted</h2><div class='scroll'><table><tr><th>#</th><th>Time</th><th>Watch</th><th>Listing</th><th>Price</th>"
             "<th>Reference</th><th>Under</th><th>Est. margin</th><th>Location</th><th>Ships</th></tr>" + arows + "</table></div>"
             "<h2>Flips you recorded</h2>" + ("<div class='scroll'><table><tr><th>#</th><th>Time</th><th>Watch</th><th>Item</th><th>Bought</th>"

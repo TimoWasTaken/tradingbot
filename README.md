@@ -79,7 +79,16 @@ Automower, Louis Poulsen and String design, Concept2 rowers, Nord keyboards, Fen
 the going asking price per watch from the listings it sees (median of the last 200 that pass the word filters), and
 pushes a notification the moment a new listing appears at least 30% under that level, or an existing one drops to
 it, with an estimated resale margin. Brand watches with varied listings can use a hard `alert_below` price instead.
-Phones and earbuds were left out on purpose: thin margins, fakes, iCloud locks and stolen goods. The first pass only learns prices, so it does not flood you with old listings. Record the flips you actually
+Phones and earbuds were left out on purpose: thin margins, fakes, iCloud locks and stolen goods.
+
+**Tradera: real sale prices and ending auctions.** With a free developer key from
+[api.tradera.com/register](https://api.tradera.com/register) (`tradera_app_id` and `tradera_app_key` in `secrets.json`)
+`bot/tradera.py` pulls ended Tradera listings for every watch and records the winning bids in `sold.csv`. The median
+of those real sales replaces the Blocket asking-price median as the reference, so an alert says "usually sells for
+2,140 kr (69 sales)" instead of "others ask 4,000 kr". It also checks the auctions ending within two hours and pushes
+a note when the next bid is 40% or more under that value. The first run pulls three pages of history per watch, so
+most watches have a real reference within a minute; the report shows sell-through rates too, which tells you what
+does not sell at all. The first pass only learns prices, so it does not flood you with old listings. Record the flips you actually
 do with `py blocket.py flip --watch ... --bought ... --sold ...` and the report shows real profit next to the alerts.
 Edit `config_blocket.json` to change watches, word filters, price bands or region (`py blocket.py locations` lists
 the codes). Commands: `blocket_scan.bat`, `blocket_start.bat`, `blocket_report.bat`. Read Blocket's terms before

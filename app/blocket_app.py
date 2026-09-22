@@ -67,7 +67,9 @@ def default_watches() -> list[dict]:
 def default_config() -> dict:
     return {"ntfy_topic": "", "poll_minutes": 10, "discount_alert_pct": 30, "location": "", "language": "sv",
             "autostart": False, "min_samples": 15, "price_window": 200, "resale_factor": 0.9,
-            "request_pause_seconds": 2, "pages": 1, "watches": default_watches()}
+            "request_pause_seconds": 2, "pages": 1, "tradera_app_id": "", "tradera_app_key": "",
+            "tradera": {"enabled": True, "ending_hours": 2, "auction_discount_pct": 40, "min_sold_samples": 8, "history_pages": 3},
+            "watches": default_watches()}
 
 
 def load_config() -> dict:
@@ -105,6 +107,9 @@ T = {
         "sent": "Test sent, check your phone.", "not_sent": "Could not send. Check the topic name and your internet connection.",
         "need_topic": "Enter your ntfy topic first (Settings tab).", "saved": "Saved.", "need_name": "Name and search text are required.",
         "confirm_remove": "Remove watch '{n}'?", "no_watches": "Add at least one watch first.",
+        "tradera_id": "Tradera App ID (optional)", "tradera_key": "Tradera App Key (optional)",
+        "tradera_help": ("With a free developer key from api.tradera.com/register the app also learns what things REALLY sell for "
+                         "(ended Tradera auctions) and warns you about auctions ending within 2 hours far below that price."),
     },
     "sv": {
         "title": "Blocket Deal Finder", "tab_watches": "Bevakningar", "tab_settings": "Inställningar", "tab_log": "Logg",
@@ -123,6 +128,9 @@ T = {
         "sent": "Testnotis skickad, kolla telefonen.", "not_sent": "Kunde inte skicka. Kontrollera ämnesnamnet och internet.",
         "need_topic": "Fyll i ditt ntfy-ämne först (fliken Inställningar).", "saved": "Sparat.", "need_name": "Namn och söktext krävs.",
         "confirm_remove": "Ta bort bevakningen '{n}'?", "no_watches": "Lägg till minst en bevakning först.",
+        "tradera_id": "Tradera App ID (valfritt)", "tradera_key": "Tradera App Key (valfritt)",
+        "tradera_help": ("Med en gratis utvecklarnyckel från api.tradera.com/register lär sig programmet också vad saker FAKTISKT säljs för "
+                         "(avslutade Tradera-auktioner) och varnar för auktioner som slutar inom 2 timmar långt under det priset."),
     },
 }
 
@@ -142,9 +150,24 @@ class Worker(threading.Thread):
     def run(self) -> None:
         notifier = Notifier(topic=self.cfg.get("ntfy_topic", ""), log=self.log)
         finder = bl.DealFinder(self.cfg, JOURNAL_DIR, notifier, self.log)
+        watcher = None
+        if self.cfg.get("tradera_app_id") and self.cfg.get("tradera_app_key"):
+            try:
+                from bot import tradera as tr
+                api = tr.TraderaAPI(self.cfg["tradera_app_id"], self.cfg["tradera_app_key"])
+                watcher = tr.TraderaWatcher(self.cfg, api, JOURNAL_DIR, notifier, self.log, blocket_reference=finder.asking_reference)
+                finder.sold_register = watcher.sold
+                self.log("Tradera: on (real sale prices and ending auctions).")
+            except Exception as e:  # noqa: BLE001
+                self.log(f"Tradera off: {e}")
         poll = max(3, int(self.cfg.get("poll_minutes", 10)))
         while not self.stop_event.is_set():
             try:
+                if watcher:
+                    try:
+                        watcher.cycle()
+                    except Exception as e:  # noqa: BLE001
+                        self.log(f"Tradera error: {e}")
                 finder.cycle()
             except Exception as e:  # noqa: BLE001
                 self.log(f"Error: {e}")
@@ -307,6 +330,16 @@ class App(tk.Tk):
         r += 1
         ttk.Button(f, text="ntfy.sh", command=lambda: webbrowser.open("https://ntfy.sh")).grid(row=r, column=0, sticky="w", pady=2)
         r += 1
+        self.v_tid = tk.StringVar(value=str(self.cfg.get("tradera_app_id", "")))
+        self.v_tkey = tk.StringVar(value=str(self.cfg.get("tradera_app_key", "")))
+        ttk.Label(f, text=self.t("tradera_id")).grid(row=r, column=0, sticky="w", pady=4)
+        ttk.Entry(f, textvariable=self.v_tid, width=14).grid(row=r, column=1, sticky="w")
+        r += 1
+        ttk.Label(f, text=self.t("tradera_key")).grid(row=r, column=0, sticky="w", pady=4)
+        ttk.Entry(f, textvariable=self.v_tkey, width=40).grid(row=r, column=1, sticky="w")
+        r += 1
+        ttk.Label(f, text=self.t("tradera_help"), wraplength=700, foreground="#555").grid(row=r, column=0, columnspan=3, sticky="w")
+        r += 1
         ttk.Label(f, text=self.t("poll")).grid(row=r, column=0, sticky="w", pady=4)
         ttk.Entry(f, textvariable=self.v_poll, width=8).grid(row=r, column=1, sticky="w")
         r += 1
@@ -331,6 +364,8 @@ class App(tk.Tk):
     # ---------- actions ----------
     def save_settings(self) -> None:
         self.cfg["ntfy_topic"] = self.v_topic.get().strip()
+        self.cfg["tradera_app_id"] = self.v_tid.get().strip()
+        self.cfg["tradera_app_key"] = self.v_tkey.get().strip()
         try:
             self.cfg["poll_minutes"] = max(3, int(float(self.v_poll.get())))
             self.cfg["discount_alert_pct"] = float(self.v_disc.get())
