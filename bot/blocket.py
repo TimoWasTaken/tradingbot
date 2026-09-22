@@ -158,8 +158,10 @@ class DealFinder:
         ask_adj = ask * self.ask_to_sold_factor if ask else None
         if self.sold_register is not None:
             med, n = self.sold_register.median(watch["name"], 1)
+            st = self.sold_register.sell_through(watch["name"])
+            st_txt = f", only {st * 100:.0f}% of listings actually sell" if st is not None and st < 0.5 else ""
             if med and n >= self.min_sold_samples:
-                self.last_reference_kind = f"real sale prices on Tradera, {n} sales"
+                self.last_reference_kind = f"real sale prices on Tradera, {n} sales{st_txt}"
                 return med, n
             if med and n >= 3:
                 ref = min(med, ask_adj) if ask_adj else med
