@@ -17,7 +17,6 @@ import statistics
 import time
 from pathlib import Path
 
-import pandas as pd
 import requests
 
 from .config import fmt_ms, fmt_num, now_ms
@@ -236,7 +235,10 @@ class DealFinder:
 
 # ---------------- journal helpers ----------------
 
-def load_csv(jdir: Path, name: str, fields: list[str]) -> pd.DataFrame:
+def load_csv(jdir: Path, name: str, fields: list[str]):
+    """pandas is imported here so the standalone desktop app does not have to bundle it."""
+    import pandas as pd
+
     p = Path(jdir) / name
     if p.exists() and p.stat().st_size > 0:
         return pd.read_csv(p, encoding="utf-8")
@@ -246,10 +248,14 @@ def load_csv(jdir: Path, name: str, fields: list[str]) -> pd.DataFrame:
 def add_flip(jdir: Path, watch: str, heading: str, bought: float, sold: float, costs: float, note: str) -> dict:
     """Record a real flip you did by hand, so the report can show actual profit next to the alerts."""
     jdir = Path(jdir)
-    flips = load_csv(jdir, "flips.csv", FLIP_FIELDS)
-    row = {"id": len(flips) + 1, "time": dt.datetime.now().strftime("%Y-%m-%d %H:%M"), "watch": watch, "heading": heading,
+    p = jdir / "flips.csv"
+    existing = 0
+    if p.exists() and p.stat().st_size > 0:
+        with open(p, encoding="utf-8", newline="") as f:
+            existing = sum(1 for _ in csv.DictReader(f))
+    row = {"id": existing + 1, "time": dt.datetime.now().strftime("%Y-%m-%d %H:%M"), "watch": watch, "heading": heading,
            "bought": bought, "sold": sold, "costs": costs, "profit": round(sold - bought - costs, 2), "note": note}
-    new = flips.empty
+    new = existing == 0
     with open(jdir / "flips.csv", "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FLIP_FIELDS)
         if new:

@@ -11,3 +11,8 @@ public/
 __pycache__/
 *.pyc
 *.tmp
+
+# desktop app build output
+build/
+dist/
+*.spec

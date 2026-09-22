@@ -85,6 +85,14 @@ Edit `config_blocket.json` to change watches, word filters, price bands or regio
 the codes). Commands: `blocket_scan.bat`, `blocket_start.bat`, `blocket_report.bat`. Read Blocket's terms before
 running this at a high rate or for anything commercial; the default is one request per watch every 10 minutes.
 
+### Desktop edition of the deal finder (for people without Python)
+
+`app/blocket_app.py` wraps the same deal finder in a small window: watches with add/edit/remove, settings (ntfy
+topic with a test button, interval, region, start with Windows, Swedish or English), and a live log. Settings and
+the journal live in `%APPDATA%\BlocketDealFinder`. `build_app.bat` builds it into a single `dist\BlocketDealFinder.exe`
+with PyInstaller (about 15 MB, no console window). The exe is unsigned, so Windows SmartScreen shows a warning on
+first start; click "More info" then "Run anyway".
+
 ---
 
 ## Backtest results (hypothetical, computed after the fact)
