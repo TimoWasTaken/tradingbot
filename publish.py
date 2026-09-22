@@ -229,8 +229,9 @@ POLY = {
               "bet, max 8 open, max 2 per event and 4 per category. Research on 588 million Polymarket trades found such "
               "favorites paid about +0.3 to +1 cent per dollar more than their price implied, while longshots under "
               "10 cents lost 6 to 20 cents per dollar; sports showed no such bias and is excluded. (2) Arbitrage: when "
-              "the asks of all mutually exclusive outcomes sum to less than 1, buys them all. Bets are held to "
-              "resolution; one tick of slippage is assumed on every fill. No real orders are ever placed."),
+              "the YES bids of mutually exclusive outcomes sum to more than 1, buys NO on all of them, which costs less "
+              "than the guaranteed payout. Bets are held to resolution; one tick of slippage and Polymarket's taker fee "
+              "(where the market charges one) are deducted on every fill. No real orders are ever placed."),
     "backtest": ("No backtest of our own yet. The bot records a daily snapshot of every scanned market so the "
                  "favorite-longshot bias can be measured on its own data over time (see the research command)."),
 }
@@ -268,9 +269,85 @@ def poly_section(f: dict) -> str:
                        for _, r in bets.tail(100).iloc[::-1].iterrows())
         sw = ("<h4>Settled bets</h4><div class='scroll'><table><tr><th>#</th><th>Kind</th><th>Side</th><th>Question</th><th>Price</th>"
               "<th>Stake</th><th>P/L USD</th><th>%</th><th>Result</th></tr>" + rows + "</table></div>")
+    arb_html = ""
+    ck = jdir / "arb_check.csv"
+    if ck.exists() and ck.stat().st_size > 0:
+        c = pd.read_csv(ck)
+        c.to_csv(OUT / "data" / "polymarket_arb_check.csv", index=False)
+        hp = jdir / "arb_hits.csv"
+        hits = pd.read_csv(hp) if hp.exists() and hp.stat().st_size > 0 else pd.DataFrame()
+        if len(hits):
+            hits.to_csv(OUT / "data" / "polymarket_arb_hits.csv", index=False)
+        arb_items = [("Order-book checks", str(len(c)), ""), ("Since", str(c["time"].iloc[0])[:16], ""),
+                     ("Markets per check", f"{c['checked'].mean():.0f}", ""), ("Sum below 1", str(int(c["sum_below_1"].sum())), ""),
+                     ("Positive after fees", str(int(c["net_positive"].sum())), ""), ("Best sum ever", f"{c['best_sum'].min():.3f}", ""),
+                     ("Typical sum", f"{c['median_sum'].median():.3f}", "")]
+        arb_html = ("<h4>Same-market arbitrage check</h4><p class='small'>Every 5 minutes the bot pulls the real order books of the "
+                    "200 most traded Yes/No markets and tests the \"YES ask + NO ask below 1\" opportunity that public Polymarket bots "
+                    "advertise as guaranteed profit. Counted: how often it exists at all, and how often anything is left after the taker "
+                    "fee. A sum of 1.010 means buying both sides costs 1.01 to get 1 back.</p>" + cards(arb_items))
     return (f"<h2 id='polymarket'>{esc(f['title'])}</h2><p class='meta'>{esc(f['subtitle'])}</p><p><b>Rules.</b> {esc(f['rules'])}</p>"
             f"<p class='small'><b>Backtest.</b> {esc(f['backtest'])}</p>" + (cards(items) if items else "")
-            + "<h4>Bankroll (paper)</h4>" + eq_html + "<h4>Open bets</h4>" + open_html + sw)
+            + "<h4>Bankroll (paper)</h4>" + eq_html + "<h4>Open bets</h4>" + open_html + sw + arb_html)
+
+
+CRYPTO15 = {
+    "key": "crypto15", "cfg": "config_crypto15.json", "title": "Crypto 15-minute markets: the speed test",
+    "subtitle": "Polymarket's Bitcoin and Ethereum Up-or-Down windows watched every 5 seconds against Binance. Paper since 2026-09-22.",
+    "rules": ("The bots that demonstrably profit on Polymarket trade these windows on speed: Binance moves first, Polymarket "
+              "reprices later, and Polymarket now charges takers 0.07 x price x (1 - price) per share here. This test asks how "
+              "much of that edge is left at home-computer speed. (1) Fair value: from the Binance move since the window opened, "
+              "the time left and the last hour's realised volatility it computes the probability the window ends UP, and buys a "
+              "side when its ask is at least 4 cents below that after fee and one tick of slippage (5% of a 100 USD paper "
+              "bankroll, one bet per window and coin, held to resolution). (2) DipArb replay: the rule from public Polymarket bot "
+              "repositories, buy a side whose ask fell 15% within seconds, then buy the other side within 60 seconds if the pair "
+              "costs 0.92 or less; 20 shares per dip on a separate 100 USD paper bankroll, stop-loss if no hedge appears. "
+              "Every tick, bet, dip and window resolution is journaled."),
+}
+
+
+def crypto15_section(f: dict) -> str:
+    from bot import crypto15 as c15
+    cfg = load_config(ROOT / f["cfg"])
+    jdir = ROOT / "journal" / f["key"]
+    start = float(cfg["capital"]["start"])
+    dip_start = float(cfg.get("diparb", {}).get("start_cash", start))
+    bets, dips, eq, rounds = (c15.load_csv(jdir / x) for x in ("bets.csv", "dips.csv", "equity.csv", "rounds.csv"))
+    items, eq_html = [], "<p class='small'>No data yet.</p>"
+    if len(eq):
+        eq.to_csv(OUT / "data" / "crypto15_equity.csv", index=False)
+        e, d = eq["equity"].astype(float), eq["dip_equity"].astype(float)
+        items += [("Fair-value bankroll", f"{n(e.iloc[-1])} USD", ""), ("Since start", f"{(e.iloc[-1] / start - 1) * 100:+.2f}%", cls(e.iloc[-1] - start)),
+                  ("DipArb bankroll", f"{n(d.iloc[-1])} USD", ""), ("Since start", f"{(d.iloc[-1] / dip_start - 1) * 100:+.2f}%", cls(d.iloc[-1] - dip_start))]
+        k = len(eq)
+        xl = [(q, fmt_ms(int(eq["ms"].iloc[int(round(q * (k - 1)))]))[:16]) for q in (0, 0.25, 0.5, 0.75, 1.0)] if k > 1 else None
+        eq_html = "<div class='chart'>" + svg_chart([("Fair value", [v / start * 100 for v in e], "#1f6feb"),
+                                                     ("DipArb replay", [v / dip_start * 100 for v in d], "#d29922")], xl) + "</div>"
+    if len(bets):
+        bets.to_csv(OUT / "data" / "crypto15_bets.csv", index=False)
+        won = int((bets["result"] == "won").sum())
+        items += [("Settled bets", str(len(bets)), ""), ("Win rate", f"{won / len(bets) * 100:.0f}%", ""),
+                  ("Avg per bet", f"{bets['pnl_pct'].mean():+.1f}%", cls(bets["pnl_pct"].mean()))]
+    if len(dips):
+        dips.to_csv(OUT / "data" / "crypto15_dips.csv", index=False)
+        items += [("Dips seen", str(len(dips)), ""), ("Hedged", str(int((dips["outcome"] == "hedged").sum())), "")]
+    items += [("Resolved windows", str(len(rounds)), "")]
+    bets_html = ""
+    if len(bets):
+        rows = "".join(f"<tr><td>{int(r['id'])}</td><td>{esc(r['opened'])}</td><td>{esc(r['kind'])}</td><td>{esc(str(r['coin']).upper())}</td>"
+                       f"<td>{esc(r['side'])}</td><td>{float(r['price']):.2f}</td><td>{esc(r['fair'])}</td><td>{n(r['stake'])}</td>"
+                       f"<td>{esc(r['winner'])}</td><td class='{cls(float(r['pnl']))}'>{float(r['pnl']):+.2f}</td></tr>"
+                       for _, r in bets.tail(60).iloc[::-1].iterrows())
+        bets_html = ("<h4>Settled bets</h4><div class='scroll'><table><tr><th>#</th><th>Opened</th><th>Kind</th><th>Coin</th><th>Side</th>"
+                     "<th>Price</th><th>Model</th><th>Stake</th><th>Ended</th><th>P/L USD</th></tr>" + rows + "</table></div>")
+    lines: list[str] = []
+    try:
+        c15.research(jdir, cfg, log=lines.append)
+    except Exception as e:  # noqa: BLE001
+        lines.append(f"research failed: {e}")
+    return (f"<h2 id='crypto15'>{esc(f['title'])}</h2><p class='meta'>{esc(f['subtitle'])}</p><p><b>Rules.</b> {esc(f['rules'])}</p>"
+            + cards(items) + "<h4>Bankrolls, % of start (paper)</h4>" + eq_html + bets_html
+            + "<h4>Research: market vs model vs what happened</h4><pre class='small'>" + esc("\n".join(lines)) + "</pre>")
 
 
 def build(pub: dict) -> Path:
@@ -281,10 +358,11 @@ def build(pub: dict) -> Path:
     topic = pub.get("public_topic", "")
     repo_url = f"https://github.com/{pub.get('github_user', '')}/{pub.get('repo', 'tradingbot')}"
     nav = (" · ".join(f"<a href='#{b['key']}'>{esc(b['title'])}</a>" for b in BOTS)
-           + " · <a href='#funds'>Fund rotation bot</a> · <a href='#polymarket'>Polymarket paper bettor</a>")
+           + " · <a href='#funds'>Fund rotation bot</a> · <a href='#polymarket'>Polymarket paper bettor</a>"
+           + " · <a href='#crypto15'>Crypto 15-minute test</a>")
     body = [
         f"<h1>{esc(pub.get('site_title', 'Tradingbot'))}</h1>",
-        f"<p class='meta'>Five rule-based bots running on simulated money against real market prices. Every trade, "
+        f"<p class='meta'>Six rule-based bots running on simulated money against real market prices. Every trade, "
         f"position and equity value on this page comes straight from the bots' journals and is regenerated automatically. "
         f"Source code: <a href='{esc(repo_url)}'>{esc(repo_url)}</a>. Last update: {now} (Stockholm time). {nav}</p>",
         "<div class='verdict'><b>Disclaimer.</b> This is a hobby project and a learning exercise. Everything here is paper "
@@ -307,6 +385,7 @@ def build(pub: dict) -> Path:
         body.append(bot_section(b))
     body.append(fund_section(FUND))
     body.append(poly_section(POLY))
+    body.append(crypto15_section(CRYPTO15))
     body.append("<h2>Method notes</h2><p class='small'>Signals are always generated on a closed bar and executed on the next bar's "
                 "open (or the next close for funds), so no look-ahead. Fees and slippage are deducted on every simulated trade. "
                 "Stops are checked against each bar's low in backtests and against the latest price in live paper trading. "
@@ -319,8 +398,8 @@ def build(pub: dict) -> Path:
     (OUT / "index.html").write_text(page, encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
     (OUT / "README.md").write_text(
-        f"# {pub.get('site_title', 'Tradingbot')}\n\nAutomatically published paper-trading journals of four rule-based trading bots "
-        f"(crypto, Swedish stocks, US stocks, fund rotation). Live page: https://{pub.get('github_user', 'USER').lower()}.github.io/{pub.get('repo', 'tradingbot')}/\n"
+        f"# {pub.get('site_title', 'Tradingbot')}\n\nAutomatically published paper-trading journals of six rule-based trading bots "
+        f"(crypto, Swedish stocks, US stocks, fund rotation, Polymarket, crypto 15-minute markets). Live page: https://{pub.get('github_user', 'USER').lower()}.github.io/{pub.get('repo', 'tradingbot')}/\n"
         f"Source code: {repo_url} (branch `main`).\n\n"
         "**Not investment advice. Paper trading only. Past results do not predict future results.**\n\n"
         "The `data/` folder holds the raw journals as CSV (trades, equity, switches), regenerated daily.\n", encoding="utf-8")

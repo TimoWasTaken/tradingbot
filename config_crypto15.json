@@ -1,0 +1,42 @@
+{
+  "journal": "crypto15",
+  "coins": ["btc", "eth"],
+  "poll_seconds": 5,
+  "tick_log_seconds": 10,
+  "equity_seconds": 300,
+  "capital": {
+    "start": 100.0,
+    "currency": "USD",
+    "sek_per_unit": 9.5
+  },
+  "min_stake": 1.0,
+  "fee_rate": 0.07,
+  "tick": 0.01,
+  "fair": {
+    "enabled": true,
+    "min_edge": 0.04,
+    "min_t_left_s": 60,
+    "max_t_left_s": 840,
+    "max_open_lag_s": 20,
+    "stake_pct": 5,
+    "vol_minutes": 60,
+    "min_ask": 0.03,
+    "max_ask": 0.97
+  },
+  "diparb": {
+    "enabled": true,
+    "drop_pct": 15,
+    "window_s": 5,
+    "sum_target": 0.92,
+    "hedge_window_s": 60,
+    "shares": 20,
+    "start_cash": 100.0
+  },
+  "settle": {
+    "max_wait_s": 7200
+  },
+  "ntfy": {
+    "server": "https://ntfy.sh",
+    "daily_report_hour": 21
+  }
+}

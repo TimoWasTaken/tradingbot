@@ -50,15 +50,50 @@ edges that the academic literature documents:
   longshots under 10 cents lost 6 to 20 cents per dollar. Sports showed no such bias. The bot buys the side priced
   90 to 98.5 cents in liquid non-sports markets resolving within 45 days, 10% of bankroll per bet, capped per event
   and category, and holds to resolution.
-- **Arbitrage.** When the asks of all mutually exclusive outcomes of an event sum to less than 1 (or YES ask + NO ask
-  in a binary market), buying them all locks in the difference. Such gaps are rare and taken by fast bots; the paper
-  bettor mostly measures how often a slow hourly scan still catches one.
+- **Arbitrage.** In an event whose outcomes are mutually exclusive (negRisk), the YES prices must sum to 1. When the
+  YES bids sum to more than 1 the bot buys NO on those outcomes: the cost is below the guaranteed payout. Such gaps
+  are rare and taken by fast bots; the paper bettor mostly measures how often a slow hourly scan still catches one.
+- **Same-market arbitrage check (measurement).** Every 5 minutes the bot pulls the real order books of the 200 most
+  traded Yes/No markets and tests the classic "YES ask + NO ask < 1" opportunity that public Polymarket bots
+  advertise as guaranteed profit. It records how often the sum is below 1, how much size sits there and whether
+  anything is left after the taker fee (`journal/polymarket/arb_check.csv`, hits in `arb_hits.csv`). A hit that is
+  positive after fees becomes a paper bet through the normal all-or-nothing path. First result on 2026-09-22: 164
+  markets, none below 1, median sum 1.010.
 
-It also stores a daily snapshot of every scanned market; `py polymarket.py research` later joins those with the
-resolutions to measure the favorite-longshot bias on the bot's own data. Commands: `polymarket_scan.bat` (what it
-would bet on now), `polymarket_start.bat`, `polymarket_report.bat`. Nothing is ever sent to Polymarket: no wallet, no
+Paper fills pay Polymarket's taker fee where the market charges one (shares x rate x price x (1 - price); rate 0.07
+on crypto, 0.05 on sports, 0.04 to 0.05 elsewhere, 0 on geopolitics) plus one tick of slippage. It also stores a daily
+snapshot of every scanned market; `py polymarket.py research` later joins those with the resolutions to measure the
+favorite-longshot bias on the bot's own data. Commands: `polymarket_scan.bat` (what it would bet on now, plus the
+order-book check), `polymarket_start.bat`, `polymarket_report.bat`. Nothing is ever sent to Polymarket: no wallet, no
 orders. Prediction markets are betting, not investing; they are zero-sum, may be unlicensed gambling where you live,
 and winnings may be taxable.
+
+### Crypto 15-minute markets: the speed test (paper)
+
+Every 15 minutes Polymarket opens "Bitcoin Up or Down" and "Ethereum Up or Down" windows that pay UP if the Chainlink
+price at the end is at or above the price at the start. The bots that demonstrably make money on Polymarket live
+here: they watch the Binance spot price, which moves first, and buy the side Polymarket has not repriced yet.
+Polymarket answered with a taker fee on these windows (0.07 x price x (1 - price) per share, 1.75 cents at 50c).
+
+`bot/crypto15.py` measures how much of that edge is reachable at home-computer speed, polling public APIs every 5
+seconds, with simulated money only:
+
+- **Fair-value strategy.** From the Binance move since the window opened, the time left and the realised volatility of
+  the last hour it computes the probability that the window ends UP. When a side's best ask is at least 4 cents
+  below that probability after the taker fee and one tick of slippage, it buys the side (5% of a 100 USD paper
+  bankroll, one bet per window and coin) and holds to resolution.
+- **DipArb replay.** Public "Polymarket bot" repositories buy a side whose ask fell 15% within seconds and then try to
+  buy the other side within 60 seconds so the pair costs 0.92 or less and pays 1. The watcher replays that rule with
+  20 shares on a separate 100 USD paper bankroll and logs every dip with what happened next (hedged, stopped out,
+  or held to resolution), so the strategy's real frequency and result are on file.
+- **Ticks.** Binance price, both order books and the model probability are written every 10 seconds
+  (`journal/crypto15/ticks.csv`); `py crypto15.py research` joins them with the resolved windows and prints how well
+  the market and the model were calibrated and whether buying on the model's signals would have paid.
+
+Commands: `py crypto15.py scan`, `crypto15_start.bat`, `crypto15_report.bat`. Limits: the window's opening price is
+the first Binance print the watcher sees after the window starts (Polymarket uses Chainlink at the exact start), and
+five-second polling is orders of magnitude slower than the bots this measures against. That is the point: the journal
+shows what is left for a slow participant after fees.
 
 ### Sports arbitrage measurement
 
@@ -158,6 +193,8 @@ Stops are watched by the bot, not by the exchange, so a stopped bot means no sto
 | `config_stocks_se.json` | Swedish stocks | watch list in `symbols` + `symbol_names`, `execution: next_open` |
 | `config_stocks_us.json` | US stocks | same |
 | `config_funds.json` | fund rotation | `universe`, `safe`, `top_n`, `lookbacks`, `fund_names` |
+| `config_polymarket.json` | Polymarket paper bettor | `favorites`, `arbitrage`, `arb_check` (order-book check every 5 min), `capital` |
+| `config_crypto15.json` | crypto 15-minute test | `coins`, `poll_seconds`, `fair` (min_edge, stake_pct), `diparb` (drop_pct, sum_target), `fee_rate` |
 | `config_publish.json` | track-record page | GitHub user, repo, branch, public ntfy topic |
 
 Common `risk` keys: `risk_per_trade_pct`, `max_position_pct`, `max_open_positions`, `max_daily_loss_pct`,
@@ -194,6 +231,8 @@ bot/            the package: config, data (Binance), data_stocks (Yahoo), indica
                 broker (paper + Binance), engine, journal, backtest, report, rotation, notify
 run.py          runs a crypto or stock bot          backtest.py     backtests a crypto or stock bot
 rotation.py     fund rotation bot (backtest/run/report)
+polymarket.py   Polymarket paper bettor + order-book check      crypto15.py     crypto 15-minute speed test (paper)
+sportsarb.py    sports arbitrage measurement                    blocket.py      Blocket/Tradera/Marketplace deal finder
 report.py       journal report                      publish.py      track-record page -> GitHub Pages
 test_push.py    ntfy test                           *.bat           double-click launchers (Windows)
 journal/        per-bot state and CSV journals (not committed)      data/  cached candles (not committed)

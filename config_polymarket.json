@@ -37,5 +37,11 @@
     "public_topic": "tradingbot-signals-7k2m9",
     "public_url": "https://timowastaken.github.io/tradingbot/"
   },
-  "poll_seconds": 3600
+  "poll_seconds": 3600,
+  "arb_check": {
+    "enabled": true,
+    "seconds": 300,
+    "markets": 200,
+    "min_size_usd": 5.0
+  }
 }

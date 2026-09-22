@@ -11,6 +11,14 @@ asks sum to less than 1 you can buy every outcome and be paid 1 no matter what h
 YES ask plus NO ask is below 1. These gaps are small, rare and taken by bots within seconds, so this mostly measures
 how often a slow scanner still sees one.
 
+Measurement, "same-market arbitrage check": every few minutes the real order books (not the Gamma summary quotes,
+which are a mirror and can never show it) of the most traded Yes/No markets are pulled and YES ask + NO ask is
+compared with 1. This is exactly the "guaranteed profit" that many public Polymarket bots advertise; the check
+counts how often it exists, how big it is, how much size is there, and whether it survives the taker fee.
+
+Fees: Polymarket charges takers shares x rate x price x (1 - price) in USDC on markets with fees enabled
+(crypto 0.07, sports 0.05, most others 0.04-0.05, geopolitics 0). Paper fills pay it; makers would not.
+
 Everything here is simulated. The module never signs or sends an order."""
 from __future__ import annotations
 
@@ -41,6 +49,19 @@ POLITICS_WORDS = re.compile(
     r"vote|ballot|primary|nominee|nomination|party|coalition|impeach|executive order|supreme court|"
     r"trump|biden|harris|vance|putin|zelensky|xi|macron|starmer|netanyahu|ceasefire|treaty|sanction|tariff|"
     r"fed|fomc|rate cut|rate hike|interest rate|cpi|inflation|gdp|recession)\b", re.I)
+
+
+FEE_RATES = {"crypto": 0.07, "sports": 0.05, "politics": 0.04, "other": 0.05}
+
+
+def fee_rate_for(fees_enabled: bool, category: str) -> float:
+    return FEE_RATES.get(category, 0.05) if fees_enabled else 0.0
+
+
+def taker_fee(price: float, qty: float, rate: float) -> float:
+    """Polymarket's taker fee in USDC for buying or selling qty shares at price: qty x rate x p x (1 - p).
+    It peaks at 50c (1.75c per share on crypto markets) and is zero on markets without fees."""
+    return float(qty) * float(rate) * float(price) * (1.0 - float(price))
 
 
 # ---------------- API ----------------
@@ -99,6 +120,8 @@ def normalize(m: dict) -> dict | None:
     end = _parse_date(m.get("endDate"))
     best_bid = _fnum(m.get("bestBid"), 0.0)
     best_ask = _fnum(m.get("bestAsk"), 0.0)
+    category = classify(str(m.get("question", "")) + " " + str(ev.get("title", "")) + " " + str(ev.get("slug", "")))
+    fees_enabled = bool(m.get("feesEnabled"))
     return {
         "id": str(m.get("id")), "question": str(m.get("question", "")), "slug": str(m.get("slug", "")),
         "event_id": str(ev.get("id", "")), "event_title": str(ev.get("title", "")), "event_slug": str(ev.get("slug", "")),
@@ -109,7 +132,7 @@ def normalize(m: dict) -> dict | None:
         "liquidity": _fnum(m.get("liquidity")), "volume": _fnum(m.get("volume")), "volume24h": _fnum(m.get("volume24hr")),
         "end": end, "closed": bool(m.get("closed")), "active": bool(m.get("active")),
         "uma": str(m.get("umaResolutionStatus", "") or ""), "group_title": str(m.get("groupItemTitle", "") or ""),
-        "category": classify(str(m.get("question", "")) + " " + str(ev.get("title", "")) + " " + str(ev.get("slug", ""))),
+        "category": category, "fees_enabled": fees_enabled, "fee_rate": fee_rate_for(fees_enabled, category),
     }
 
 
@@ -148,6 +171,69 @@ def fetch_active_markets(max_markets: int = 1500, log=print) -> list[dict]:
 def fetch_market(market_id: str) -> dict | None:
     raw = _get(f"{GAMMA}/markets/{market_id}")
     return normalize(raw) if isinstance(raw, dict) else None
+
+
+def fetch_books(token_ids: list[str], chunk: int = 50) -> dict[str, dict]:
+    """Real order books for many tokens, a few POST /books calls: token_id -> best bid/ask with the size at that level."""
+    out: dict[str, dict] = {}
+    for i in range(0, len(token_ids), chunk):
+        part = token_ids[i:i + chunk]
+        for attempt in range(3):
+            try:
+                r = requests.post(f"{CLOB}/books", json=[{"token_id": t} for t in part], timeout=30)
+                if r.status_code == 429:
+                    time.sleep(3 * (attempt + 1))
+                    continue
+                r.raise_for_status()
+                for b in r.json():
+                    bids = sorted(((_fnum(x.get("price")), _fnum(x.get("size"))) for x in b.get("bids", [])), key=lambda x: -x[0])
+                    asks = sorted(((_fnum(x.get("price")), _fnum(x.get("size"))) for x in b.get("asks", [])), key=lambda x: x[0])
+                    out[str(b.get("asset_id"))] = {
+                        "bid": bids[0][0] if bids else 0.0, "bid_size": bids[0][1] if bids else 0.0,
+                        "ask": asks[0][0] if asks else 0.0, "ask_size": asks[0][1] if asks else 0.0,
+                        "tick": _fnum(b.get("tick_size"), 0.01) or 0.01}
+                break
+            except Exception as e:  # noqa: BLE001
+                if attempt == 2:
+                    raise RuntimeError(f"Polymarket order books failed: {e}") from e
+                time.sleep(2 * (attempt + 1))
+        time.sleep(0.2)
+    return out
+
+
+def check_same_market_arb(markets: list[dict], cfg: dict, books: dict[str, dict] | None = None) -> dict:
+    """The classic "YES ask + NO ask < 1" opportunity, measured on the real order books of the most traded markets.
+    Returns {"rows": per-market numbers, "hits": markets where buying both sides pays more than it costs after the
+    taker fee, "summary": counts}. gross = 1 - (yes_ask + no_ask) per set; fee = taker fee on both legs; sets = how
+    many complete sets the best ask levels hold (the smaller of the two)."""
+    a = cfg.get("arb_check", {})
+    top = [m for m in markets if len(m["tokens"]) == 2 and not m["closed"] and m["active"]][: int(a.get("markets", 200))]
+    if books is None:
+        books = fetch_books([str(t) for m in top for t in m["tokens"]])
+    rows, hits = [], []
+    for m in top:
+        y, n = books.get(str(m["tokens"][0])), books.get(str(m["tokens"][1]))
+        if not y or not n or y["ask"] <= 0 or n["ask"] <= 0:
+            continue
+        total = y["ask"] + n["ask"]
+        gross = 1.0 - total
+        fee = m["fee_rate"] * (y["ask"] * (1 - y["ask"]) + n["ask"] * (1 - n["ask"]))
+        net = gross - fee
+        size = min(y["ask_size"], n["ask_size"])
+        row = {"market_id": m["id"], "question": m["question"], "category": m["category"], "yes_ask": y["ask"], "no_ask": n["ask"],
+               "yes_bid": y["bid"], "no_bid": n["bid"], "sum_asks": round(total, 4), "gross": round(gross, 4), "fee": round(fee, 4),
+               "net": round(net, 4), "sets": round(size, 2), "usd": round(size * total, 2), "fee_rate": m["fee_rate"], "market": m}
+        rows.append(row)
+        if net > 0:
+            hits.append(row)
+    best = max(rows, key=lambda r: r["net"]) if rows else None
+    summary = {"checked": len(rows), "gross_pos": sum(1 for r in rows if r["gross"] > 0),
+               "gross_1pct": sum(1 for r in rows if r["gross"] >= 0.01), "net_pos": len(hits),
+               "best_sum": best["sum_asks"] if best else None, "best_net": best["net"] if best else None,
+               "best_question": best["question"] if best else "",
+               "median_sum": float(pd.Series([r["sum_asks"] for r in rows]).median()) if rows else None}
+    hits.sort(key=lambda r: -r["net"])
+    return {"rows": rows, "hits": hits, "summary": summary}
 
 
 def resolution(m: dict) -> int | None:
@@ -219,14 +305,8 @@ def scan_arbitrage(markets: list[dict], cfg: dict) -> list[dict]:
     min_edge = float(a.get("min_edge", 0.01))
     min_liq = float(a.get("min_liquidity", 5000))
     out = []
-    for m in markets:
-        qs = side_quotes(m)
-        if len(qs) == 2 and not m["closed"] and m["liquidity"] >= min_liq:
-            total = qs[0]["ask"] + qs[1]["ask"]
-            if total < 1 - min_edge:
-                out.append({"kind": "arb_binary", "legs": [(m, 0, qs[0]["ask"]), (m, 1, qs[1]["ask"])], "cost": total,
-                            "payout": 1.0, "edge": (1 - total) / total, "title": m["question"],
-                            "why": f"YES ask {qs[0]['ask']:.3f} + NO ask {qs[1]['ask']:.3f} = {total:.3f} < 1: buying both pays 1 whatever happens"})
+    # Binary markets are checked against the real order books in check_same_market_arb: the Gamma summary quotes are
+    # a mirror (NO ask = 1 - YES bid), so YES ask + NO ask computed from them is always 1 + spread and never below 1.
     by_event: dict[str, list[dict]] = {}
     for m in markets:
         if m["neg_risk"] and m["event_id"] and not m["closed"] and m["best_bid"] > 0 and m["liquidity"] >= min_liq:
@@ -272,6 +352,7 @@ class PaperBettor:
         self.state_path = self.jdir / "state.json"
         self.state = self._load()
         self.sek_rate = float(cfg["capital"].get("sek_per_unit", 0) or 0)
+        self.markets: list[dict] = []
 
     def _load(self) -> dict:
         if self.state_path.exists() and self.state_path.stat().st_size > 0:
@@ -316,17 +397,20 @@ class PaperBettor:
         fill = min(round(price + tick, 4), 0.999)          # assume one tick of slippage
         if stake > self.state["cash"] or stake < float(self.cfg.get("min_stake", 2.0)):
             return None
-        qty = stake / fill
+        rate = float(m.get("fee_rate") or 0.0)
+        qty = stake / (fill + rate * fill * (1 - fill))   # the taker fee (qty x rate x p x (1-p)) comes out of the stake
+        fee = taker_fee(fill, qty, rate)
         self.state["bet_counter"] += 1
         d = days_left(m)
         pos = {"id": self.state["bet_counter"], "opened": fmt_ms(now_ms()), "opened_ms": now_ms(), "kind": kind,
                "category": m["category"], "market_id": m["id"], "event_id": m["event_id"], "event": m["event_title"],
                "question": m["question"],
-               "side": int(side), "side_name": m["outcomes"][side], "price": fill, "qty": qty, "stake": stake,
+               "side": int(side), "side_name": m["outcomes"][side], "price": fill, "qty": qty, "stake": stake, "fee": round(fee, 4),
                "end_date": m["end"].strftime("%Y-%m-%d") if m["end"] else "", "days": round(d, 1), "why": why}
         self.state["cash"] -= stake
         self.state["positions"].append(pos)
-        msg = (f"BUY {pos['side_name']} on \"{m['question']}\" at {fill:.3f}, {self.money(stake)} for {qty:.1f} shares. "
+        msg = (f"BUY {pos['side_name']} on \"{m['question']}\" at {fill:.3f}, {self.money(stake)} for {qty:.1f} shares"
+               + (f" (incl. {fee:.2f} USD taker fee)" if fee >= 0.005 else "") + ". "
                f"Pays {self.money(qty)} if right, 0 if wrong. Resolves around {pos['end_date']}.\nWhy: {why}.")
         self.log(f"BET #{pos['id']}: " + msg.replace("\n", " "))
         if not quiet:
@@ -408,6 +492,58 @@ class PaperBettor:
                                     tags=["white_check_mark" if payout > 0 else "x"])
         self.state["positions"] = keep
 
+    # ---------- measurement: same-market arbitrage on real order books ----------
+    ARB_CHECK_FIELDS = ["time", "ms", "checked", "sum_below_1", "sum_below_0_99", "net_positive", "best_sum", "best_net_pct",
+                        "median_sum", "best_question"]
+    ARB_HIT_FIELDS = ["time", "ms", "market_id", "question", "category", "yes_ask", "no_ask", "sum_asks", "gross_pct", "fee_pct",
+                      "net_pct", "sets", "usd", "bet_placed"]
+
+    def arb_check(self, markets: list[dict] | None = None) -> dict | None:
+        """Pulls the real books of the most traded Yes/No markets and records whether YES ask + NO ask < 1 exists.
+        Positive after fees and big enough -> a paper arbitrage bet through the normal all-or-nothing path."""
+        a = self.cfg.get("arb_check", {})
+        if not a.get("enabled", True):
+            return None
+        markets = markets or self.markets
+        if not markets:
+            return None
+        res = check_same_market_arb(markets, self.cfg)
+        s = res["summary"]
+        ms = now_ms()
+        self._append_csv("arb_check.csv", self.ARB_CHECK_FIELDS, {
+            "time": fmt_ms(ms, seconds=True), "ms": ms, "checked": s["checked"], "sum_below_1": s["gross_pos"],
+            "sum_below_0_99": s["gross_1pct"], "net_positive": s["net_pos"],
+            "best_sum": s["best_sum"], "best_net_pct": round(s["best_net"] * 100, 3) if s["best_net"] is not None else "",
+            "median_sum": round(s["median_sum"], 4) if s["median_sum"] is not None else "", "best_question": s["best_question"][:80]})
+        self.state["arb_checks"] = int(self.state.get("arb_checks", 0)) + 1
+        self.state["arb_hits"] = int(self.state.get("arb_hits", 0)) + s["gross_pos"]
+        self.state["arb_hits_net"] = int(self.state.get("arb_hits_net", 0)) + s["net_pos"]
+        self.state.setdefault("arb_check_since", fmt_ms(ms))
+        min_edge = float(self.cfg["arbitrage"].get("min_edge", 0.01))
+        min_usd = float(a.get("min_size_usd", 5.0))
+        for h in res["hits"]:
+            placed = False
+            if h["net"] / h["sum_asks"] >= min_edge and h["usd"] >= min_usd and self.cfg["arbitrage"].get("enabled", True):
+                m = h["market"]
+                cand = {"kind": "arb_binary", "legs": [(m, 0, h["yes_ask"]), (m, 1, h["no_ask"])], "cost": h["sum_asks"],
+                        "payout": 1.0, "edge": h["net"] / h["sum_asks"], "title": m["question"],
+                        "why": (f"real order books: YES ask {h['yes_ask']:.3f} + NO ask {h['no_ask']:.3f} = {h['sum_asks']:.3f} < 1, "
+                                f"{h['sets']:.0f} sets available, {h['net'] * 100:.2f}% left after the taker fee; buying both pays 1 "
+                                f"whatever happens")}
+                placed = bool(self.place_arbitrage(cand))
+            self._append_csv("arb_hits.csv", self.ARB_HIT_FIELDS, {
+                "time": fmt_ms(ms, seconds=True), "ms": ms, "market_id": h["market_id"], "question": h["question"],
+                "category": h["category"], "yes_ask": h["yes_ask"], "no_ask": h["no_ask"], "sum_asks": h["sum_asks"],
+                "gross_pct": round(h["gross"] * 100, 3), "fee_pct": round(h["fee"] * 100, 3), "net_pct": round(h["net"] * 100, 3),
+                "sets": h["sets"], "usd": h["usd"], "bet_placed": int(placed)})
+        best = (f"best sum {s['best_sum']:.3f}" if s["best_sum"] is not None else "no books")
+        med = f"{s['median_sum']:.3f}" if s["median_sum"] is not None else "-"
+        self.log(f"Same-market arb check: {s['checked']} markets, {s['gross_pos']} with YES ask + NO ask < 1, {s['net_pos']} still "
+                 f"positive after fees ({best}, median {med}). Running total: {self.state['arb_hits']} sightings in "
+                 f"{self.state['arb_checks']} checks since {self.state['arb_check_since'][:10]}.")
+        self.save()
+        return res
+
     # ---------- research snapshots ----------
     def snapshot(self, markets: list[dict]) -> None:
         """Once a day: record every scanned market's price so the favorite-longshot bias can be measured on our own data."""
@@ -426,6 +562,7 @@ class PaperBettor:
     # ---------- one cycle ----------
     def cycle(self) -> dict:
         markets = fetch_active_markets(int(self.cfg.get("scan_limit", 1500)), log=self.log)
+        self.markets = markets
         lookup = {m["id"]: m["prices"] for m in markets}
         self.settle()
         summary = {"favorites": [], "arbs": []}
@@ -437,6 +574,10 @@ class PaperBettor:
             for c in scan_favorites(markets, self.cfg, self.held_ids()):
                 if self.place_favorite(c):
                     summary["favorites"].append(c)
+        try:
+            self.arb_check(markets)
+        except Exception as e:  # noqa: BLE001
+            self.log(f"Same-market arb check failed: {e}")
         self.snapshot(markets)
         eq = self.equity(lookup)
         self._append_csv("equity.csv", ["time", "ms", "equity", "cash"],
@@ -464,6 +605,9 @@ class PaperBettor:
             lines.append(f"Settled: {n} bets, {won} won ({won / n * 100:.0f}%), average {bets['pnl_pct'].mean():+.2f}% per bet.")
         else:
             lines.append("No settled bets yet.")
+        if self.state.get("arb_checks"):
+            lines.append(f"Same-market arbitrage (YES ask + NO ask < 1): seen {self.state.get('arb_hits', 0)} times in "
+                         f"{self.state['arb_checks']} order-book checks, {self.state.get('arb_hits_net', 0)} worth anything after fees.")
         lines.append(f"Open bets: {len(self.state['positions'])}: " +
                      (", ".join(f"{p['side_name']} {p['question'][:40]} @ {p['price']:.2f}" for p in self.state["positions"][:6]) or "none"))
         self.notifier.send("Daily report: Polymarket bot [paper]", "\n".join(lines), tags=["bar_chart"])
