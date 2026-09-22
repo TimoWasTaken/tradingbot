@@ -84,8 +84,10 @@ seconds, with simulated money only:
   bankroll, one bet per window and coin) and holds to resolution.
 - **DipArb replay.** Public "Polymarket bot" repositories buy a side whose ask fell 15% within seconds and then try to
   buy the other side within 60 seconds so the pair costs 0.92 or less and pays 1. The watcher replays that rule with
-  20 shares on a separate 100 USD paper bankroll and logs every dip with what happened next (hedged, stopped out,
-  or held to resolution), so the strategy's real frequency and result are on file.
+  20 shares per dip and no bankroll limit, and logs every dip with what happened next (hedged, stopped out, or held
+  to resolution), so the strategy's real frequency and cumulative result are on file. First 90 minutes
+  (2026-09-22): 70 dips, 8 hedged, 56 stopped out, -92 USD. The "dips" are the market repricing on Binance moves,
+  not panic.
 - **Ticks.** Binance price, both order books and the model probability are written every 10 seconds
   (`journal/crypto15/ticks.csv`); `py crypto15.py research` joins them with the resolved windows and prints how well
   the market and the model were calibrated and whether buying on the model's signals would have paid.
@@ -94,6 +96,20 @@ Commands: `py crypto15.py scan`, `crypto15_start.bat`, `crypto15_report.bat`. Li
 the first Binance print the watcher sees after the window starts (Polymarket uses Chainlink at the exact start), and
 five-second polling is orders of magnitude slower than the bots this measures against. That is the point: the journal
 shows what is left for a slow participant after fees.
+
+### Copy-trading test (paper)
+
+The third idea public Polymarket bots sell is copying the leaderboard. `bot/copytrade.py` replays it honestly:
+once a day it takes the overall and politics leaderboards (month and week), judges every wallet on its last 100
+closed positions with the gate those bots advertise (60%+ win rate, profit factor 1.5+, 30+ closed positions, no
+single position above 30% of the profit, plus: traded within a week and not mostly 5/15-minute crypto windows,
+which cannot be copied in time), and follows up to 15. Every minute it polls their recent trades through the public
+data API. A new buy is copied on paper at the live best ask plus one tick and the taker fee, 5% of a 100 USD
+bankroll, unless the market ends within an hour, the price already moved more than 10% above theirs, or the
+signal is older than 15 minutes; a sell by the same wallet in the same market closes the copy at the best bid.
+Every signal is logged with the delay and the price premium (`journal/copytrade/signals.csv`), which is the number
+those bots never publish. Commands: `py copytrade.py wallets` (who passes the gate now), `copytrade_start.bat`,
+`copytrade_report.bat`.
 
 ### Sports arbitrage measurement
 
@@ -195,6 +211,7 @@ Stops are watched by the bot, not by the exchange, so a stopped bot means no sto
 | `config_funds.json` | fund rotation | `universe`, `safe`, `top_n`, `lookbacks`, `fund_names` |
 | `config_polymarket.json` | Polymarket paper bettor | `favorites`, `arbitrage`, `arb_check` (order-book check every 5 min), `capital` |
 | `config_crypto15.json` | crypto 15-minute test | `coins`, `poll_seconds`, `fair` (min_edge, stake_pct), `diparb` (drop_pct, sum_target), `fee_rate` |
+| `config_copytrade.json` | copy-trading test | `selection` (boards, max_wallets), `gate` (win rate, profit factor), `copy` (stake_pct, max_premium, skip_updown) |
 | `config_publish.json` | track-record page | GitHub user, repo, branch, public ntfy topic |
 
 Common `risk` keys: `risk_per_trade_pct`, `max_position_pct`, `max_open_positions`, `max_daily_loss_pct`,
@@ -232,6 +249,7 @@ bot/            the package: config, data (Binance), data_stocks (Yahoo), indica
 run.py          runs a crypto or stock bot          backtest.py     backtests a crypto or stock bot
 rotation.py     fund rotation bot (backtest/run/report)
 polymarket.py   Polymarket paper bettor + order-book check      crypto15.py     crypto 15-minute speed test (paper)
+copytrade.py    copy-trading test (leaderboard wallets, paper)
 sportsarb.py    sports arbitrage measurement                    blocket.py      Blocket/Tradera/Marketplace deal finder
 report.py       journal report                      publish.py      track-record page -> GitHub Pages
 test_push.py    ntfy test                           *.bat           double-click launchers (Windows)

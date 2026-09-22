@@ -80,8 +80,8 @@ def cmd_run(cfg: dict, args) -> int:
     w = c15.CryptoWatcher(cfg, jdir, notifier, log)
     poll = float(cfg.get("poll_seconds", 5))
     log(f"Crypto 15-minute watcher: {', '.join(c.upper() for c in w.coins)} every {poll:.0f}s. Paper bankroll "
-        f"{w.money(w.state['cash'])} for the fair-value strategy, {w.money(w.state['dip_cash'])} for the DipArb replay. "
-        f"Nothing is ever sent to Polymarket.")
+        f"{w.money(w.state['cash'])} for the fair-value strategy; the DipArb replay is counted without a limit "
+        f"(running P/L {w.state['dip_cash'] - w.state.get('dip_start', 100):+.2f} USD). Nothing is ever sent to Polymarket.")
     if w.state.get("ticks"):
         log("Resuming: " + w.status_line())
     else:
@@ -130,7 +130,7 @@ def journal_report(cfg: dict, jdir: Path) -> str:
     if not eq.empty:
         e, d = eq["equity"].astype(float), eq["dip_equity"].astype(float)
         items += [("Fair-value bankroll", f"{fmt_num(e.iloc[-1])} USD", ""), ("Since start", f"{(e.iloc[-1] / start - 1) * 100:+.2f}%", cls(e.iloc[-1] - start)),
-                  ("DipArb bankroll", f"{fmt_num(d.iloc[-1])} USD", ""), ("Since start", f"{(d.iloc[-1] / dip_start - 1) * 100:+.2f}%", cls(d.iloc[-1] - dip_start))]
+                  ("DipArb replay P/L", f"{d.iloc[-1] - dip_start:+.2f} USD", cls(d.iloc[-1] - dip_start))]
     if not bets.empty:
         won = int((bets["result"] == "won").sum())
         items += [("Settled bets", str(len(bets)), ""), ("Win rate", f"{won / len(bets) * 100:.0f}%", ""),
@@ -142,9 +142,10 @@ def journal_report(cfg: dict, jdir: Path) -> str:
     if not eq.empty:
         n = len(eq)
         xl = [(f, fmt_ms(int(eq["ms"].iloc[int(round(f * (n - 1)))]))[:16]) for f in (0, 0.25, 0.5, 0.75, 1.0)] if n > 1 else None
-        body.append("<h2>Bankrolls, % of start</h2><div class='chart'>" + svg_chart(
-            [("Fair value", [v / start * 100 for v in eq["equity"].astype(float)], "#1f6feb"),
-             ("DipArb replay", [v / dip_start * 100 for v in eq["dip_equity"].astype(float)], "#d29922")], xl) + "</div>")
+        body.append("<h2>Fair-value bankroll, % of start</h2><div class='chart'>" + svg_chart(
+            [("Fair value", [v / start * 100 for v in eq["equity"].astype(float)], "#1f6feb")], xl) + "</div>")
+        body.append("<h2>DipArb replay, cumulative P/L in USD</h2><div class='chart'>" + svg_chart(
+            [("DipArb replay", [v - dip_start for v in eq["dip_equity"].astype(float)], "#d29922")], xl) + "</div>")
     if not bets.empty:
         rows = "".join(f"<tr><td>{int(r['id'])}</td><td>{esc(r['opened'])}</td><td>{esc(r['kind'])}</td><td>{esc(str(r['coin']).upper())}</td>"
                        f"<td>{esc(r['side'])}</td><td>{float(r['price']):.2f}</td><td>{esc(r['fair'])}</td><td>{fmt_num(r['stake'])}</td>"

@@ -1,0 +1,44 @@
+{
+  "journal": "copytrade",
+  "poll_seconds": 60,
+  "trades_per_poll": 30,
+  "settle_seconds": 600,
+  "refund_after_days": 14,
+  "capital": {
+    "start": 100.0,
+    "currency": "USD",
+    "sek_per_unit": 9.5
+  },
+  "min_stake": 1.0,
+  "tick": 0.01,
+  "selection": {
+    "boards": [["OVERALL", "MONTH"], ["OVERALL", "WEEK"], ["POLITICS", "MONTH"]],
+    "per_board": 40,
+    "max_candidates": 60,
+    "closed_lookback": 100,
+    "max_idle_hours": 168,
+    "max_wallets": 15
+  },
+  "gate": {
+    "min_closed": 30,
+    "min_win_rate": 0.6,
+    "min_profit_factor": 1.5,
+    "min_total_pnl": 500,
+    "max_single_share": 0.3,
+    "max_updown_share": 0.5
+  },
+  "copy": {
+    "stake_pct": 5,
+    "max_open": 12,
+    "min_signal_usd": 50,
+    "max_delay_s": 900,
+    "max_premium": 0.10,
+    "min_hours_left": 1,
+    "skip_updown": true
+  },
+  "ntfy": {
+    "server": "https://ntfy.sh",
+    "daily_report_hour": 21,
+    "notify_each_copy": false
+  }
+}

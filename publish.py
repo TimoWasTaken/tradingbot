@@ -301,9 +301,73 @@ CRYPTO15 = {
               "side when its ask is at least 4 cents below that after fee and one tick of slippage (5% of a 100 USD paper "
               "bankroll, one bet per window and coin, held to resolution). (2) DipArb replay: the rule from public Polymarket bot "
               "repositories, buy a side whose ask fell 15% within seconds, then buy the other side within 60 seconds if the pair "
-              "costs 0.92 or less; 20 shares per dip on a separate 100 USD paper bankroll, stop-loss if no hedge appears. "
+              "costs 0.92 or less; 20 shares per dip, stop-loss if no hedge appears, counted without a bankroll limit so the "
+              "statistic keeps growing (it lost 92 USD in its first 90 minutes). "
               "Every tick, bet, dip and window resolution is journaled."),
 }
+
+
+COPYTRADE = {
+    "key": "copytrade", "cfg": "config_copytrade.json", "title": "Copy-trading test",
+    "subtitle": "Follows Polymarket leaderboard wallets with 100 USD of paper money. Since 2026-09-23.",
+    "rules": ("The third idea public Polymarket bots sell: copy the leaderboard. Once a day the overall and politics leaderboards "
+              "(month and week) are judged on each wallet's last 100 closed positions with the gate those bots advertise (60%+ win "
+              "rate, profit factor 1.5+, 30+ closed positions, no single position above 30% of the profit), plus two practical "
+              "conditions: traded within a week, and not mostly 5/15-minute crypto windows, which are over before a copy could "
+              "fill. Up to 15 wallets are followed; their recent trades are polled every minute. A buy is copied at the live best "
+              "ask plus one tick and the taker fee with 5% of the bankroll, unless the market ends within an hour, the price is "
+              "already more than 10% above theirs, or the signal is older than 15 minutes. A sell by the same wallet closes the "
+              "copy at the best bid; otherwise copies ride to resolution. Every signal is logged with the delay and price premium."),
+}
+
+
+def copytrade_section(f: dict) -> str:
+    from bot import copytrade as ct
+    cfg = load_config(ROOT / f["cfg"])
+    jdir = ROOT / "journal" / f["key"]
+    start = float(cfg["capital"]["start"])
+    bets, signals, eq = (ct.load_csv(jdir / x) for x in ("bets.csv", "signals.csv", "equity.csv"))
+    state = load_state(jdir)
+    items, eq_html = [], "<p class='small'>No data yet.</p>"
+    if len(eq):
+        eq.to_csv(OUT / "data" / "copytrade_equity.csv", index=False)
+        e = eq["equity"].astype(float)
+        items += [("Paper bankroll", f"{n(e.iloc[-1])} USD", ""), ("Since start", f"{(e.iloc[-1] / start - 1) * 100:+.2f}%", cls(e.iloc[-1] - start))]
+        eq_html = chart(eq["ms"].to_numpy(), e.to_numpy(), start)
+    if len(bets):
+        bets.to_csv(OUT / "data" / "copytrade_bets.csv", index=False)
+        won = int((bets["result"] == "won").sum())
+        items += [("Closed copies", str(len(bets)), ""), ("Win rate", f"{won / len(bets) * 100:.0f}%", ""),
+                  ("Avg per copy", f"{bets['pnl_pct'].mean():+.1f}%", cls(bets["pnl_pct"].mean()))]
+    if len(signals):
+        signals.to_csv(OUT / "data" / "copytrade_signals.csv", index=False)
+        buys = signals[signals["side"] == "BUY"]
+        copied = signals[signals["action"] == "copied"]
+        items += [("Signals seen", str(len(signals)), ""), ("Buys copied", f"{len(copied)} of {len(buys)}", ""),
+                  ("Median delay", f"{signals['delay_s'].median() / 60:.0f} min", "")]
+        prem = pd.to_numeric(copied["premium_pct"], errors="coerce").dropna()
+        if len(prem):
+            items += [("Avg price premium", f"{prem.mean():+.1f}%", cls(-prem.mean()))]
+    items += [("Wallets followed", str(len([w for w in state.get("wallets", {}).values() if not w.get("retired")])), "")]
+    wrows = "".join(f"<tr><td>{esc(v['name'])}</td><td>{esc(v.get('board', ''))}</td><td>{float(v.get('pnl', 0)):,.0f}</td>"
+                    f"<td>{float(v.get('win_rate', 0)) * 100:.0f}%</td><td>{float(v.get('profit_factor', 0)):.2f}</td><td>{esc(v.get('closed_n', ''))}</td></tr>"
+                    for v in state.get("wallets", {}).values() if not v.get("retired"))
+    w_html = ("<h4>Wallets followed (public leaderboard names)</h4><div class='scroll'><table><tr><th>Name</th><th>Board</th><th>Period P/L USD</th>"
+              "<th>Win rate</th><th>Profit factor</th><th>Closed positions judged</th></tr>" + wrows + "</table></div>") if wrows else ""
+    open_rows = "".join(f"<tr><td>{p['id']}</td><td>{esc(p['name'])}</td><td>{esc(p['outcome'])}</td><td>{esc(p['question'])}</td><td>{float(p['their_price']):.2f}</td>"
+                        f"<td>{float(p['price']):.2f}</td><td>{n(p['stake'])}</td><td>{p['delay_s'] / 60:.0f} min</td><td>{esc(p.get('end_date', ''))}</td></tr>"
+                        for p in state.get("positions", []))
+    open_html = ("<div class='scroll'><table><tr><th>#</th><th>Wallet</th><th>Side</th><th>Market</th><th>Their price</th><th>Our price</th>"
+                 "<th>Stake USD</th><th>Delay</th><th>Resolves</th></tr>" + open_rows + "</table></div>") if open_rows else "<p class='small'>No open copies.</p>"
+    b_html = ""
+    if len(bets):
+        rows = "".join(f"<tr><td>{int(r['id'])}</td><td>{esc(r['name'])}</td><td>{esc(r['outcome'])}</td><td>{esc(r['question'])}</td><td>{float(r['their_price']):.2f}</td>"
+                       f"<td>{float(r['price']):.2f}</td><td>{esc(r['exit'])}</td><td class='{cls(float(r['pnl']))}'>{float(r['pnl']):+.2f}</td></tr>"
+                       for _, r in bets.tail(60).iloc[::-1].iterrows())
+        b_html = ("<h4>Closed copies</h4><div class='scroll'><table><tr><th>#</th><th>Wallet</th><th>Side</th><th>Market</th><th>Their price</th>"
+                  "<th>Our price</th><th>Exit</th><th>P/L USD</th></tr>" + rows + "</table></div>")
+    return (f"<h2 id='copytrade'>{esc(f['title'])}</h2><p class='meta'>{esc(f['subtitle'])}</p><p><b>Rules.</b> {esc(f['rules'])}</p>"
+            + cards(items) + "<h4>Bankroll (paper)</h4>" + eq_html + w_html + "<h4>Open copies</h4>" + open_html + b_html)
 
 
 def crypto15_section(f: dict) -> str:
@@ -318,11 +382,12 @@ def crypto15_section(f: dict) -> str:
         eq.to_csv(OUT / "data" / "crypto15_equity.csv", index=False)
         e, d = eq["equity"].astype(float), eq["dip_equity"].astype(float)
         items += [("Fair-value bankroll", f"{n(e.iloc[-1])} USD", ""), ("Since start", f"{(e.iloc[-1] / start - 1) * 100:+.2f}%", cls(e.iloc[-1] - start)),
-                  ("DipArb bankroll", f"{n(d.iloc[-1])} USD", ""), ("Since start", f"{(d.iloc[-1] / dip_start - 1) * 100:+.2f}%", cls(d.iloc[-1] - dip_start))]
+                  ("DipArb replay P/L", f"{d.iloc[-1] - dip_start:+.2f} USD", cls(d.iloc[-1] - dip_start))]
         k = len(eq)
         xl = [(q, fmt_ms(int(eq["ms"].iloc[int(round(q * (k - 1)))]))[:16]) for q in (0, 0.25, 0.5, 0.75, 1.0)] if k > 1 else None
-        eq_html = "<div class='chart'>" + svg_chart([("Fair value", [v / start * 100 for v in e], "#1f6feb"),
-                                                     ("DipArb replay", [v / dip_start * 100 for v in d], "#d29922")], xl) + "</div>"
+        eq_html = ("<h4>Fair-value bankroll, % of start (paper)</h4><div class='chart'>" + svg_chart([("Fair value", [v / start * 100 for v in e], "#1f6feb")], xl)
+                   + "</div><h4>DipArb replay, cumulative P/L in USD</h4><div class='chart'>"
+                   + svg_chart([("DipArb replay", [v - dip_start for v in d], "#d29922")], xl) + "</div>")
     if len(bets):
         bets.to_csv(OUT / "data" / "crypto15_bets.csv", index=False)
         won = int((bets["result"] == "won").sum())
@@ -346,7 +411,7 @@ def crypto15_section(f: dict) -> str:
     except Exception as e:  # noqa: BLE001
         lines.append(f"research failed: {e}")
     return (f"<h2 id='crypto15'>{esc(f['title'])}</h2><p class='meta'>{esc(f['subtitle'])}</p><p><b>Rules.</b> {esc(f['rules'])}</p>"
-            + cards(items) + "<h4>Bankrolls, % of start (paper)</h4>" + eq_html + bets_html
+            + cards(items) + eq_html + bets_html
             + "<h4>Research: market vs model vs what happened</h4><pre class='small'>" + esc("\n".join(lines)) + "</pre>")
 
 
@@ -359,10 +424,10 @@ def build(pub: dict) -> Path:
     repo_url = f"https://github.com/{pub.get('github_user', '')}/{pub.get('repo', 'tradingbot')}"
     nav = (" · ".join(f"<a href='#{b['key']}'>{esc(b['title'])}</a>" for b in BOTS)
            + " · <a href='#funds'>Fund rotation bot</a> · <a href='#polymarket'>Polymarket paper bettor</a>"
-           + " · <a href='#crypto15'>Crypto 15-minute test</a>")
+           + " · <a href='#crypto15'>Crypto 15-minute test</a> · <a href='#copytrade'>Copy-trading test</a>")
     body = [
         f"<h1>{esc(pub.get('site_title', 'Tradingbot'))}</h1>",
-        f"<p class='meta'>Six rule-based bots running on simulated money against real market prices. Every trade, "
+        f"<p class='meta'>Seven rule-based bots running on simulated money against real market prices. Every trade, "
         f"position and equity value on this page comes straight from the bots' journals and is regenerated automatically. "
         f"Source code: <a href='{esc(repo_url)}'>{esc(repo_url)}</a>. Last update: {now} (Stockholm time). {nav}</p>",
         "<div class='verdict'><b>Disclaimer.</b> This is a hobby project and a learning exercise. Everything here is paper "
@@ -386,6 +451,7 @@ def build(pub: dict) -> Path:
     body.append(fund_section(FUND))
     body.append(poly_section(POLY))
     body.append(crypto15_section(CRYPTO15))
+    body.append(copytrade_section(COPYTRADE))
     body.append("<h2>Method notes</h2><p class='small'>Signals are always generated on a closed bar and executed on the next bar's "
                 "open (or the next close for funds), so no look-ahead. Fees and slippage are deducted on every simulated trade. "
                 "Stops are checked against each bar's low in backtests and against the latest price in live paper trading. "
@@ -398,8 +464,8 @@ def build(pub: dict) -> Path:
     (OUT / "index.html").write_text(page, encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
     (OUT / "README.md").write_text(
-        f"# {pub.get('site_title', 'Tradingbot')}\n\nAutomatically published paper-trading journals of six rule-based trading bots "
-        f"(crypto, Swedish stocks, US stocks, fund rotation, Polymarket, crypto 15-minute markets). Live page: https://{pub.get('github_user', 'USER').lower()}.github.io/{pub.get('repo', 'tradingbot')}/\n"
+        f"# {pub.get('site_title', 'Tradingbot')}\n\nAutomatically published paper-trading journals of seven rule-based trading bots "
+        f"(crypto, Swedish stocks, US stocks, fund rotation, Polymarket, crypto 15-minute markets, copy-trading). Live page: https://{pub.get('github_user', 'USER').lower()}.github.io/{pub.get('repo', 'tradingbot')}/\n"
         f"Source code: {repo_url} (branch `main`).\n\n"
         "**Not investment advice. Paper trading only. Past results do not predict future results.**\n\n"
         "The `data/` folder holds the raw journals as CSV (trades, equity, switches), regenerated daily.\n", encoding="utf-8")

@@ -16,7 +16,8 @@ one look every few seconds, and only with simulated money:
 2. DipArb replay. Public "Polymarket bot" repositories buy a side whose ask fell 15 % within a few seconds and then
    try to buy the other side within 60 s so that the pair costs less than 0.92 and pays 1. Every such dip is replayed
    with the same rules and logged with what happened next (hedged, stopped out, or held to resolution), so that
-   strategy's real frequency and result can be read off the journal.
+   strategy's real frequency and result can be read off the journal. There is no bankroll limit on the replay: the
+   running total is the statistic (it lost 92 USD in its first 90 minutes, so a limit would just stop the count).
 3. Ticks. Binance price, the Polymarket books and the model probability are written every few seconds so the
    calibration of the market and of the model can be measured afterwards (the research command).
 
@@ -390,9 +391,7 @@ class CryptoWatcher:
                     fill = min(ask + self.tick, 0.99)
                     fee = taker_fee(fill, shares, rate)
                     cost = shares * fill + fee
-                    if cost > self.state["dip_cash"]:
-                        return
-                    self.state["dip_cash"] -= cost
+                    self.state["dip_cash"] -= cost                # no bankroll limit: dip_cash is a running total
                     self.state["dips"] = int(self.state.get("dips", 0)) + 1
                     r["dip"] = {"coin": coin, "round": r["round"], "side": side, "from_ask": old_ask, "to_ask": ask, "leg1": fill,
                                 "shares": shares, "fee": fee, "cost": cost, "start_ms": ms, "t_left": round(t_left),
@@ -489,7 +488,7 @@ class CryptoWatcher:
                                                       "resolved_by": how})
             self.log(f"SETTLED #{p['id']} {coin.upper()} {p['side']} ({p['kind']}): window ended {winner}, {pnl:+.2f} USD "
                      f"({pnl / float(p['stake']) * 100:+.1f}%). Bankroll {self.money(self.equity('fair'))}"
-                     + (f", DipArb bankroll {self.money(self.equity('dip'))}" if p["book"] == "dip" else "") + ".")
+                     + (f", DipArb replay P/L {self.equity('dip') - float(self.state.get('dip_start', 100)):+.2f} USD" if p["book"] == "dip" else "") + ".")
         self.state["positions"] = keep
         self.save()
 
@@ -505,8 +504,9 @@ class CryptoWatcher:
         bets = load_csv(self.jdir / "bets.csv")
         n = len(bets)
         won = int((bets["result"] == "won").sum()) if n else 0
-        return (f"Fair-value bankroll {self.money(self.equity('fair', books))} ({n} settled, {won} won) | DipArb bankroll "
-                f"{self.money(self.equity('dip', books))} ({self.state.get('dips', 0)} dips, {self.state.get('dips_hedged', 0)} hedged) | "
+        return (f"Fair-value bankroll {self.money(self.equity('fair', books))} ({n} settled, {won} won) | DipArb replay P/L "
+                f"{self.equity('dip', books) - float(self.state.get('dip_start', 100)):+.2f} USD ({self.state.get('dips', 0)} dips, "
+                f"{self.state.get('dips_hedged', 0)} hedged) | "
                 f"open {len(self.state['positions'])} | ticks {self.state.get('ticks', 0)}")
 
     def _daily_report(self, books: dict) -> None:
