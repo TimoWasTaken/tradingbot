@@ -1,0 +1,13 @@
+# private: API keys and the private ntfy topic
+secrets.json
+hemligheter.json
+
+# local state and output (the published track record lives in the gh-pages branch)
+journal/
+data/
+reports/
+public/
+
+__pycache__/
+*.pyc
+*.tmp

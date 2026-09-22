@@ -1,0 +1,83 @@
+{
+  "mode": "paper",
+  "market": "crypto",
+  "journal": "crypto",
+  "exchange": {
+    "testnet": false
+  },
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "symbol_names": {
+    "BTCUSDT": "Bitcoin",
+    "ETHUSDT": "Ethereum"
+  },
+  "timeframe": "4h",
+  "strategies": {
+    "breakout": {
+      "enabled": true,
+      "lookback": 20,
+      "exit_lookback": 10,
+      "vol_mult": 1.5,
+      "vol_len": 20,
+      "trend_ema": 200,
+      "atr_len": 14,
+      "stop_atr": 2.0,
+      "trail_atr": 2.5,
+      "max_hold_bars": 0
+    },
+    "trend": {
+      "enabled": true,
+      "fast": 20,
+      "slow": 50,
+      "trend_ema": 200,
+      "atr_len": 14,
+      "stop_atr": 2.5,
+      "trail_atr": 3.0,
+      "max_hold_bars": 0
+    },
+    "meanrev": {
+      "enabled": true,
+      "bb_len": 20,
+      "bb_std": 2.0,
+      "rsi_len": 14,
+      "rsi_buy": 30,
+      "rsi_exit": 55,
+      "trend_ema": 200,
+      "atr_len": 14,
+      "stop_atr": 2.0,
+      "trail_atr": 0,
+      "max_hold_bars": 24
+    }
+  },
+  "capital": {
+    "start": 10.0,
+    "currency": "USDT",
+    "sek_per_unit": 10.0
+  },
+  "risk": {
+    "risk_per_trade_pct": 2.0,
+    "max_position_pct": 95.0,
+    "max_open_positions": 1,
+    "max_daily_loss_pct": 5.0,
+    "max_drawdown_pct": 30.0,
+    "fee_pct": 0.1,
+    "slippage_pct": 0.05,
+    "reduce_at_drawdown_pct": 10.0,
+    "reduce_exit_drawdown_pct": 5.0,
+    "reduce_factor": 0.5,
+    "min_notional": 5.0
+  },
+  "backtest": {
+    "days": 1460
+  },
+  "ntfy": {
+    "server": "https://ntfy.sh",
+    "daily_report_hour": 20,
+    "public_topic": "tradingbot-signals-7k2m9",
+    "public_url": "https://timowastaken.github.io/tradingbot/"
+  },
+  "poll_seconds": 30,
+  "lookback_bars": 1000
+}
