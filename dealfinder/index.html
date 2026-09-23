@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blocket Deal Finder – fynd innan alla andra</title>
+<meta name="description" content="Ett litet Windows-program som bevakar Blocket, Tradera och Facebook Marketplace, lär sig vad saker faktiskt säljs för, och pushar till din telefon när något ligger långt under.">
+<style>
+  :root{--bg:#f7f8fa;--fg:#1c1e21;--muted:#5b6470;--acc:#1f6feb;--ok:#1a7f4b;--card:#fff;--line:#e3e6ea}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);background:var(--bg)}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 16px 64px}
+  header{padding:40px 0 16px}
+  h1{font-size:34px;line-height:1.15;margin:0 0 12px}
+  h2{font-size:22px;margin:40px 0 12px}
+  p.lead{font-size:19px;color:var(--muted);margin:0 0 20px}
+  .cta{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600;margin:6px 8px 6px 0}
+  .cta.alt{background:#fff;color:var(--acc);border:1px solid var(--acc)}
+  .small{color:var(--muted);font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .card h3{margin:0 0 6px;font-size:16px}
+  .card p{margin:0;color:var(--muted);font-size:15px}
+  .alert{background:#fff;border-left:4px solid var(--ok);border-radius:8px;padding:14px 16px;font-family:ui-monospace,Consolas,monospace;font-size:14px;white-space:pre-wrap;margin:12px 0}
+  .price{font-size:40px;font-weight:700;margin:4px 0}
+  ol li,ul li{margin:6px 0}
+  img.shot{width:100%;border:1px solid var(--line);border-radius:10px;margin:8px 0 16px}
+  details{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0}
+  summary{cursor:pointer;font-weight:600}
+  footer{margin-top:48px;color:var(--muted);font-size:13px}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Få pushen när något på Blocket ligger 30&nbsp;% under vad det faktiskt säljs för.</h1>
+  <p class="lead">Blocket Deal Finder är ett litet Windows-program som bevakar Blocket (och Tradera-auktioner samt Facebook Marketplace om du vill) dygnet runt, lär sig riktiga försäljningspriser, och pushar till din telefon inom minuter från att en annons läggs ut. Du köper. Programmet köper aldrig.</p>
+  <a class="cta" href="BlocketDealFinder.exe" download>Ladda ner, prova gratis i 14 dagar</a>
+  <a class="cta alt" href="#kop">Köp licens, 249 kr</a>
+  <p class="small">Windows 10/11. Ingen installation, en fil. Allt körs på din dator.</p>
+</header>
+
+<img class="shot" src="screenshot.png" alt="Programmets fönster med fyndlistan" onerror="this.style.display='none'">
+
+<h2>Så här ser ett larm ut</h2>
+<div class="alert">Fynd #12: Bugaboo 54% under
+Bugaboo Fox 3 komplett med liggdel
+1 200 kr i Sundbyberg på Blocket, kan skickas, publicerad för 3 min sedan.
+'Bugaboo' SÄLJS vanligen för ca 2 600 kr (grund: riktiga försäljningspriser på Tradera, 10 affärer), så detta är 54% under. Efter ca 12% försäljningskostnader behåller du ca 2 290 kr = ca 1 090 kr marginal, före transport. Kolla exakt modell: referensen blandar alla 'Bugaboo'-annonser som klarar dina filter.
+https://www.blocket.se/annons/...</div>
+<p class="small">Skillnaden mot en vanlig Blocket-bevakning: referensen är vad saker <b>säljs</b> för, inte vad folk <b>begär</b>. Utropspriserna ligger ofta 40–50 % över.</p>
+
+<h2>Vad du får</h2>
+<div class="grid">
+  <div class="card"><h3>Riktiga försäljningspriser</h3><p>Med en gratis nyckel från Tradera lär sig programmet vad varje bevakning faktiskt går för, från avslutade auktioner. Utan nyckel skalas Blockets utropspriser ned till typiskt försäljningsvärde.</p></div>
+  <div class="card"><h3>Tre källor</h3><p>Blocket varje 10:e minut. Tradera-auktioner som slutar inom två timmar långt under referensen. Facebook Marketplace några gånger om dagen (valfritt, via Apify).</p></div>
+  <div class="card"><h3>Färdiga bevakningar</h3><p>Verktyg (Festool, Hilti, Makita), barnvagnar (Bugaboo, Thule), elcyklar, designlampor, Weber, Automower, roddmaskiner, kameraobjektiv. Ändra, ta bort, lägg till egna med ordfilter.</p></div>
+  <div class="card"><h3>Prissänkningar</h3><p>Larmar också när en annons du redan sett sänks till fyndnivå, inte bara på nya annonser.</p></div>
+  <div class="card"><h3>Marginal i kronor</h3><p>Varje larm räknar ut vad du behåller efter försäljningskostnader, så du ser direkt om det är värt en resa.</p></div>
+  <div class="card"><h3>Ditt eget</h3><p>Ingen inloggning, inget konto hos oss, ingen data lämnar din dator utom pushnotisen till din egen ntfy-kanal. Fliken Fynd sparar alla larm.</p></div>
+</div>
+
+<h2 id="ladda-ner">Kom igång på 5 minuter</h2>
+<ol>
+  <li><a href="BlocketDealFinder.exe" download>Ladda ner BlocketDealFinder.exe</a> och dubbelklicka. Windows kan varna eftersom filen inte är signerad av en stor leverantör: klicka <i>Mer information</i> och <i>Kör ändå</i>.</li>
+  <li>Programmet guidar dig: installera appen <b>ntfy</b> på telefonen, skriv in din privata kanal och skicka en testnotis.</li>
+  <li>Slå på det du vill hitta och tryck <b>Starta bevakning</b>. Första omgången lär bara in prisnivåerna; fynden börjar från nästa.</li>
+</ol>
+<p class="small">Fönstret kan stängas, bevakningen fortsätter i bakgrunden (ikonen nere vid klockan). All hjälp finns inne i programmet.</p>
+
+<h2 id="kop">Pris</h2>
+<div class="card">
+  <div class="price">249 kr</div>
+  <p>Engångspris, en person, hur många datorer som helst. Alla uppdateringar av version 1 ingår. 14 dagars gratis provperiod först, utan kortuppgifter.</p>
+  <p style="margin-top:12px"><a class="cta" href="#kop">Köp licens (betallänk kommer inom kort)</a></p>
+  <p class="small">Efter köpet får du en licensnyckel kopplad till din e-postadress inom ett dygn. Skriv in e-post och nyckel under Inställningar, Licens, i programmet.</p>
+</div>
+
+<h2>Vanliga frågor</h2>
+<details><summary>Måste datorn vara på?</summary><p>Ja, bevakningen körs på din dator. Kryssa i "Starta med Windows" och stäng av viloläge, eller kör på en gammal laptop som får stå på.</p></details>
+<details><summary>Kan programmet köpa åt mig?</summary><p>Nej, avsiktligt. Blocket tillåter det inte och det skulle köpa fel saker. Programmet ger dig försprånget; du kollar annonsen och bestämmer.</p></details>
+<details><summary>Hur vet det vad saker säljs för?</summary><p>Med en gratis utvecklarnyckel från api.tradera.com hämtar programmet avslutade auktioner för varje bevakning och räknar median och andel som faktiskt säljs. Utan nyckel används Blockets utropspriser nedskalade med en faktor som är uppmätt mot Tradera.</p></details>
+<details><summary>Varför varnar Windows när jag startar filen?</summary><p>Programmet är inte signerat med ett dyrt kodsigneringscertifikat, så SmartScreen visar en varning första gången. Källkoden är öppen på GitHub om du vill granska den.</p></details>
+<details><summary>Vad kostar Facebook Marketplace-delen?</summary><p>Facebook har inget öppet API. Programmet kan använda tjänsten Apify som hämtar annonser åt dig för cirka 6 öre per annons, med 5 dollar gratis per månad. Helt valfritt.</p></details>
+<details><summary>Blocket ändrar sin sajt, vad händer då?</summary><p>Då uppdaterar jag programmet. Uppdateringar av version 1 ingår i priset.</p></details>
+<details><summary>Fungerar det på Mac?</summary><p>Inte som färdig fil ännu.</p></details>
+
+<footer>
+  <p>Blocket Deal Finder är ett fristående verktyg och har inget samarbete med Blocket, Tradera, Meta eller Apify. Inga garantier om fynd eller vinst: programmet ger information, besluten är dina. Kontakt: KONTAKT_EPOST. Källkoden är öppen för den som vill granska den.</p>
+</footer>
+</div>
+</body>
+</html>

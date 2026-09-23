@@ -1,0 +1,4 @@
+id,opened,opened_ms,kind,category,market_id,event,question,side,price,qty,stake,end_date,days,settled,settled_ms,payout,pnl,pnl_pct,result
+1,2026-09-22 08:02,1790056969610,favorite,crypto,4617517,Ethereum above ___ on September 23?,"Will the price of Ethereum be above $2,600 on September 23?",0,0.94,10.638297872340424,10.0,2026-09-23,1.4,2026-09-23 18:56,1790182573310,10.6383,0.6383,6.383,won
+2,2026-09-22 08:02,1790056970594,favorite,crypto,4617523,Ethereum above ___ on September 23?,"Will the price of Ethereum be above $2,900 on September 23?",1,0.959,10.427528675703858,10.0,2026-09-23,1.4,2026-09-23 18:56,1790182574518,10.4275,0.4275,4.275,won
+3,2026-09-22 08:02,1790056971601,favorite,crypto,4617544,Bitcoin above ___ on September 23?,"Will the price of Bitcoin be above $82,000 on September 23?",0,0.96,10.416666666666668,10.0,2026-09-23,1.4,2026-09-23 18:56,1790182575718,10.4167,0.4167,4.167,won

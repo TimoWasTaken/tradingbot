@@ -1,3 +1,186 @@
 time,ms,checked,sum_below_1,sum_below_0_99,net_positive,best_sum,best_net_pct,median_sum,best_question
 2026-09-22 23:36:59,1790113019855,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by September 30?
 2026-09-22 23:42:04,1790113324326,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by September 30?
+2026-09-22 23:47:08,1790113628426,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by September 30?
+2026-09-22 23:52:12,1790113932685,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by September 30?
+2026-09-22 23:57:16,1790114236835,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by September 30?
+2026-09-23 00:02:20,1790114540814,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by September 30?
+2026-09-23 00:07:24,1790114844890,163,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 00:12:28,1790115148937,163,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 00:17:32,1790115452960,163,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 00:22:37,1790115757276,163,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 00:27:41,1790116061350,163,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 00:32:45,1790116365374,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by September 30?
+2026-09-23 00:37:15,1790116635290,170,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 00:42:19,1790116939768,170,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 00:47:23,1790117243875,170,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 00:52:28,1790117548024,169,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 00:57:31,1790117851980,169,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:02:35,1790118155990,169,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:07:40,1790118460014,169,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:12:44,1790118764073,169,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:17:47,1790119067999,169,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:22:52,1790119372049,169,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:27:56,1790119676026,168,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:33:00,1790119980192,168,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:37:30,1790120250573,187,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 01:42:34,1790120554821,186,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 01:47:38,1790120858914,186,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:52:42,1790121162976,185,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 01:57:47,1790121467033,185,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through September 30?
+2026-09-23 02:02:51,1790121771083,185,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 02:07:55,1790122075272,185,0,0,0,1.001,-0.1,1.01,Saudi Oil Pipeline (East-West) restarts by September 22?
+2026-09-23 02:12:59,1790122379237,185,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 02:18:03,1790122683251,184,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 02:23:07,1790122987290,185,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 02:28:11,1790123291329,185,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 02:33:15,1790123595359,184,0,0,0,1.001,-0.1,1.01,Saudi Oil Pipeline (East-West) restarts by September 22?
+2026-09-23 02:37:46,1790123866033,185,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 02:42:50,1790124170023,186,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 02:47:53,1790124473995,187,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 02:52:58,1790124778148,187,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 02:58:02,1790125082139,186,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 03:03:06,1790125386173,184,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 03:08:10,1790125690312,184,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:13:14,1790125994222,180,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:18:18,1790126298141,179,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:23:22,1790126602186,177,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:28:26,1790126906228,175,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:33:30,1790127210232,173,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:38:01,1790127481178,179,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:43:05,1790127785145,174,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:48:09,1790128089229,173,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:53:13,1790128393333,167,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 03:58:17,1790128697353,165,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:03:21,1790129001472,163,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:08:25,1790129305639,163,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:13:29,1790129609706,162,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:18:33,1790129913787,162,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:23:37,1790130217759,162,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:28:41,1790130521865,161,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:33:46,1790130826656,161,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:38:16,1790131096250,178,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:43:20,1790131400368,178,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:48:24,1790131704467,178,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:53:28,1790132008449,177,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 04:58:32,1790132312384,176,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:03:36,1790132616387,174,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:08:40,1790132920325,173,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:13:44,1790133224355,170,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:18:48,1790133528140,169,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:23:52,1790133832036,169,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:28:55,1790134135836,166,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:33:59,1790134439587,166,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:38:30,1790134710414,171,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:43:34,1790135014196,168,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:48:38,1790135318023,168,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:53:42,1790135622677,166,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 05:58:46,1790135926546,164,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 06:03:50,1790136230356,162,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 06:08:54,1790136534148,162,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 14:55:20,1790168120894,168,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:00:24,1790168424844,166,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:05:28,1790168728982,166,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:10:32,1790169032966,162,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:15:36,1790169336992,162,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:20:40,1790169640907,162,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:25:44,1790169944933,161,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:30:49,1790170249046,162,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:35:53,1790170553021,162,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:40:57,1790170857103,160,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:46:01,1790171161616,159,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:51:05,1790171465664,158,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 15:55:35,1790171735215,169,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:00:39,1790172039243,168,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:05:43,1790172343345,167,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:10:47,1790172647521,165,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:15:51,1790172951664,162,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:20:55,1790173255637,163,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:25:59,1790173559904,160,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:31:03,1790173863807,161,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 16:36:07,1790174167700,162,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 16:41:11,1790174471761,162,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 16:46:15,1790174775696,161,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 16:51:19,1790175079699,159,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 16:55:49,1790175349926,164,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 17:00:53,1790175653749,163,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:05:57,1790175957842,160,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:11:01,1790176261865,160,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:16:05,1790176565831,156,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:21:09,1790176869836,157,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:26:13,1790177173758,156,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:31:17,1790177477623,153,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:36:21,1790177781488,152,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:41:25,1790178085381,151,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:46:29,1790178389302,152,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:51:33,1790178693318,152,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 17:56:04,1790178964933,159,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:01:09,1790179269052,158,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:06:13,1790179573102,158,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:11:17,1790179877195,158,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:16:21,1790180181046,157,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:21:25,1790180485052,156,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:26:29,1790180789012,157,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:31:33,1790181093182,156,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:36:37,1790181397224,156,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:41:41,1790181701120,156,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:46:45,1790182005113,155,0,0,0,1.001,-0.1,1.01,Will Yossi Cohen be the next Prime Minister of Israel?
+2026-09-23 18:51:49,1790182309301,155,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-09-23 18:56:24,1790182584345,172,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:01:28,1790182888336,172,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:06:32,1790183192371,171,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:11:36,1790183496297,172,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:16:40,1790183800364,171,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:21:44,1790184104501,171,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:26:48,1790184408425,170,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:31:52,1790184712425,170,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:36:56,1790185016536,170,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:42:00,1790185320658,169,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:47:04,1790185624592,169,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:52:08,1790185928559,168,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 19:56:38,1790186198975,170,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:01:43,1790186503291,169,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:06:47,1790186807334,167,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:11:51,1790187111250,167,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:16:55,1790187415161,166,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:21:59,1790187719464,165,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:27:03,1790188023544,163,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:32:07,1790188327524,163,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:37:11,1790188631595,163,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:42:15,1790188935614,162,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:47:19,1790189239514,162,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:52:23,1790189543359,162,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 20:56:53,1790189813488,166,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:01:57,1790190117701,166,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:07:01,1790190421820,166,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:12:05,1790190725919,166,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:17:09,1790191029875,165,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:22:13,1790191333939,164,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:27:17,1790191637839,164,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:32:22,1790191942080,162,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:37:25,1790192245971,162,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:42:30,1790192550022,160,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:47:34,1790192854038,160,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:52:37,1790193157920,160,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 21:57:08,1790193428599,158,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:02:13,1790193733060,158,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:07:17,1790194037277,157,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:12:21,1790194341187,156,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:17:25,1790194645155,153,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:22:29,1790194949228,152,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:27:33,1790195253090,150,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:32:37,1790195557039,151,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:37:40,1790195860804,149,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:42:44,1790196164588,149,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:47:48,1790196468931,149,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:52:52,1790196772916,147,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 22:57:23,1790197043787,164,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:02:28,1790197348098,161,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:07:32,1790197652014,160,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:12:35,1790197955942,160,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:17:39,1790198259949,159,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:22:44,1790198564012,159,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:27:47,1790198867850,159,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:32:51,1790199171652,159,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:37:55,1790199475554,159,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
+2026-09-23 23:42:59,1790199779483,159,0,0,0,1.001,-0.1,1.01,Kharg Island no longer under Iranian control by September 30?
