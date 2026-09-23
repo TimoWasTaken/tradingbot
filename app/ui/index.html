@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Blocket Deal Finder</title>
+<style>
+  :root{--bg:#f4f5f7;--card:#fff;--fg:#111827;--muted:#6b7280;--line:#e5e7eb;--acc:#2563eb;--acc-d:#1d4ed8;--ok:#16a34a;--ok-bg:#ecfdf3;--warn:#b45309;--warn-bg:#fffbeb;--bad:#dc2626;--r:14px;--sh:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1)}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font:15px/1.5 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased}
+  button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:9px 14px;background:#fff;color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+  button:hover{background:#f9fafb}
+  button.primary{background:var(--acc);color:#fff;box-shadow:none;font-weight:600}
+  button.primary:hover{background:var(--acc-d)}
+  button.big{padding:12px 22px;font-size:16px;border-radius:12px}
+  button.ghost{box-shadow:none;background:transparent;color:var(--acc);font-weight:600}
+  button.ghost:hover{background:#eef2ff}
+  button.danger{color:var(--bad)}
+  button:disabled{opacity:.5;cursor:default}
+  input,select,textarea{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--fg);width:100%}
+  input:focus,select:focus,textarea:focus{outline:2px solid #bfdbfe;border-color:var(--acc)}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 5px}
+  .field{margin:0 0 14px}
+  .row{display:flex;gap:10px;align-items:center}
+  .row>*{flex:1}
+  .row>.auto{flex:0 0 auto}
+  h1{font-size:26px;margin:0 0 8px;letter-spacing:-.01em}
+  h2{font-size:19px;margin:0 0 12px;letter-spacing:-.01em}
+  h3{font-size:15px;margin:0 0 4px}
+  p{margin:0 0 10px}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+  .card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:18px}
+  .hidden{display:none!important}
+
+  /* layout */
+  .app{display:grid;grid-template-columns:220px 1fr;height:100vh}
+  .side{background:#fff;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:6px}
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 16px;font-weight:700;font-size:16px}
+  .brand .logo{width:32px;height:32px;border-radius:9px;background:var(--acc);display:grid;place-items:center;color:#fff;font-size:16px}
+  .nav{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--fg);text-decoration:none;font-weight:500}
+  .nav:hover{background:#f3f4f6}
+  .nav.active{background:#eef2ff;color:var(--acc)}
+  .nav .ic{width:22px;text-align:center}
+  .side .spacer{flex:1}
+  .trial{font-size:13px;padding:10px 12px;border-radius:10px;background:var(--warn-bg);color:var(--warn);cursor:pointer}
+  .trial.ok{background:var(--ok-bg);color:var(--ok)}
+  .trial.bad{background:#fef2f2;color:var(--bad)}
+  .main{display:flex;flex-direction:column;min-width:0}
+  .topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;background:#fff;border-bottom:1px solid var(--line)}
+  .status{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:#f3f4f6;font-size:13px;font-weight:500}
+  .status .dot{width:8px;height:8px;border-radius:50%;background:#9ca3af}
+  .status.on{background:var(--ok-bg);color:var(--ok)} .status.on .dot{background:var(--ok);box-shadow:0 0 0 4px #bbf7d0}
+  .topbar .grow{flex:1}
+  .content{padding:24px;overflow:auto}
+  .content>section{max-width:900px}
+
+  /* deals */
+  .deal{display:grid;grid-template-columns:48px 1fr auto;gap:14px;align-items:center;padding:16px 18px;margin:0 0 10px}
+  .deal .ic{width:48px;height:48px;border-radius:12px;background:#f3f4f6;display:grid;place-items:center;font-size:24px}
+  .deal .title{font-weight:600;font-size:15px;margin:0 0 3px}
+  .deal .meta{color:var(--muted);font-size:13px}
+  .deal .right{text-align:right;min-width:170px}
+  .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:14px;background:var(--ok-bg);color:var(--ok)}
+  .badge.warm{background:var(--warn-bg);color:var(--warn)}
+  .deal .sub{font-size:13px;color:var(--muted);margin-top:4px}
+  .deal .actions{margin-top:8px}
+  .empty{text-align:center;padding:48px 20px;color:var(--muted)}
+  .empty .big{font-size:40px;margin-bottom:8px}
+
+  /* watches */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .watch{display:flex;gap:12px;align-items:flex-start;padding:16px}
+  .watch .ic{font-size:26px;width:40px;text-align:center;flex:0 0 auto}
+  .watch .body{flex:1;min-width:0}
+  .watch .name{font-weight:600}
+  .watch .blurb{color:var(--muted);font-size:13px;margin-top:2px}
+  .watch .edit{font-size:13px;color:var(--acc);cursor:pointer;margin-top:6px;display:inline-block}
+  .watch.add{border:2px dashed var(--line);box-shadow:none;background:transparent;cursor:pointer;align-items:center;justify-content:center;color:var(--acc);font-weight:600;min-height:92px}
+  .watch.add:hover{background:#eef2ff}
+  .switch{position:relative;width:42px;height:24px;flex:0 0 auto}
+  .switch input{opacity:0;width:0;height:0}
+  .switch span{position:absolute;inset:0;background:#d1d5db;border-radius:999px;transition:.15s;cursor:pointer}
+  .switch span:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .switch input:checked+span{background:var(--ok)}
+  .switch input:checked+span:before{transform:translateX(18px)}
+
+  /* settings */
+  .section{margin:0 0 18px}
+  .section h2{display:flex;align-items:center;gap:8px}
+  details.adv summary{cursor:pointer;color:var(--acc);font-weight:600;padding:6px 0}
+  .code{font-family:ui-monospace,Consolas,monospace;font-size:20px;letter-spacing:.04em;background:#f3f4f6;padding:12px 16px;border-radius:12px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .ok-text{color:var(--ok);font-weight:600}
+  .bad-text{color:var(--bad);font-weight:600}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+  .log{font-family:ui-monospace,Consolas,monospace;font-size:12px;white-space:pre-wrap;background:#0f172a;color:#cbd5e1;padding:14px;border-radius:12px;max-height:340px;overflow:auto}
+
+  /* onboarding + modal */
+  .overlay{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:40;overflow:auto;padding:24px}
+  .wizard{width:min(680px,100%);background:#fff;border-radius:20px;box-shadow:0 10px 40px rgba(16,24,40,.12);padding:32px 36px}
+  .dots{display:flex;gap:6px;margin:0 0 18px}
+  .dots i{width:28px;height:6px;border-radius:99px;background:var(--line)}
+  .dots i.on{background:var(--acc)}
+  .steps{counter-reset:s;margin:14px 0}
+  .steps li{list-style:none;position:relative;padding:0 0 12px 40px}
+  .steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:#eef2ff;color:var(--acc);font-weight:700;display:grid;place-items:center;font-size:13px}
+  .wfoot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px}
+  .modal-bg{position:fixed;inset:0;background:rgba(17,24,39,.45);display:grid;place-items:center;z-index:45;padding:24px}
+  .modal{width:min(560px,100%);background:#fff;border-radius:18px;padding:24px 26px;max-height:90vh;overflow:auto}
+  a{color:var(--acc)}
+  @media (prefers-color-scheme: dark){
+    :root{--bg:#0f1115;--card:#171a21;--fg:#e5e7eb;--muted:#9aa3b2;--line:#2a303b;--ok-bg:#0f2a1a;--warn-bg:#2a2110;--sh:0 1px 2px rgba(0,0,0,.4)}
+    button{background:#1f2430;color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)} button:hover{background:#262c3a}
+    button.primary{background:var(--acc);color:#fff} button.primary:hover{background:var(--acc-d)}
+    input,select,textarea{background:#11141a;color:var(--fg);border-color:var(--line)}
+    .side,.topbar{background:#12151b} .nav:hover{background:#1c2129} .nav.active{background:#1b2a4a;color:#93b4ff}
+    .status{background:#1f2430} .deal .ic{background:#1f2430} .code{background:#1f2430}
+    .wizard,.modal{background:#171a21} .steps li:before{background:#1b2a4a;color:#93b4ff} .watch.add:hover{background:#1b2a4a}
+    .trial{background:#2a2110;color:#f5c26b} .trial.ok{background:#0f2a1a;color:#5fd38a} .trial.bad{background:#2a1212;color:#f58a8a}
+    .toast{background:#e5e7eb;color:#111827}
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">🔎</div><div>Deal Finder</div></div>
+    <a class="nav active" data-view="deals"><span class="ic">✨</span>Fynd</a>
+    <a class="nav" data-view="watches"><span class="ic">🎯</span>Bevakningar</a>
+    <a class="nav" data-view="settings"><span class="ic">⚙️</span>Inställningar</a>
+    <a class="nav" data-view="help"><span class="ic">💬</span>Hjälp</a>
+    <div class="spacer"></div>
+    <div class="trial" id="trialBadge" onclick="go('settings')"></div>
+    <div class="small muted" style="padding:8px 12px 0">v<span id="ver"></span></div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="status" id="status"><span class="dot"></span><span id="statusText">Pausad</span></div>
+      <div class="grow"></div>
+      <button id="btnNow" onclick="checkNow()">Kolla nu</button>
+      <button class="primary" id="btnToggle" onclick="toggleRun()">Starta bevakning</button>
+    </div>
+    <div class="content">
+
+      <section id="view-deals">
+        <h1>Fynd</h1>
+        <p class="muted">Annonser som ligger långt under vad saker faktiskt säljs för. Samma larm skickas till din telefon.</p>
+        <div id="deals"></div>
+      </section>
+
+      <section id="view-watches" class="hidden">
+        <h1>Bevakningar</h1>
+        <p class="muted">Slå på det du vill hitta. Varje bevakning har färdiga filter som sorterar bort tillbehör, reservdelar och "sökes".</p>
+        <div class="grid" id="watches"></div>
+        <p class="small muted" style="margin-top:14px"><a href="#" onclick="resetWatches();return false">Återställ till standardbevakningarna</a></p>
+      </section>
+
+      <section id="view-settings" class="hidden">
+        <h1>Inställningar</h1>
+
+        <div class="card section">
+          <h2>📱 Telefon</h2>
+          <p class="small muted">Fynden skickas som pushnotiser genom appen ntfy till din privata kanal. Installera ntfy, tryck på plus i appen och prenumerera på namnet nedan.</p>
+          <div class="field"><label>Din privata kanal</label>
+            <div class="code"><span id="topicShow"></span><button class="auto" onclick="copyTopic()">Kopiera</button></div>
+          </div>
+          <div class="row" style="margin-bottom:8px"><button class="auto" onclick="testPush()">Skicka testnotis</button><span id="pushResult" class="small"></span></div>
+          <details class="adv"><summary>Byt kanalnamn</summary>
+            <div class="row" style="margin-top:8px"><input id="s_topic" placeholder="t.ex. fynd-anna-8k2m"><button class="auto" onclick="saveSettings(['ntfy_topic'])">Spara</button></div>
+          </details>
+        </div>
+
+        <div class="card section">
+          <h2>🎯 Bevakning</h2>
+          <div class="row">
+            <div class="field"><label>Region</label><select id="s_location"></select></div>
+            <div class="field"><label>Kolla var (minuter)</label><input id="s_poll" type="number" min="3" max="60"></div>
+            <div class="field"><label>Larma vid % under</label><input id="s_disc" type="number" min="5" max="90"></div>
+          </div>
+          <button onclick="saveSettings(['location','poll_minutes','discount_alert_pct'])">Spara</button>
+        </div>
+
+        <div class="card section">
+          <h2>💻 Program</h2>
+          <div class="row" style="margin-bottom:12px">
+            <div>Starta automatiskt med Windows och kör i bakgrunden</div>
+            <label class="switch auto"><input type="checkbox" id="s_auto" onchange="saveSettings(['autostart'])"><span></span></label>
+          </div>
+          <div class="row">
+            <button onclick="post('/api/open_data')">Öppna datamappen</button>
+            <button class="danger" onclick="quitApp()">Avsluta programmet helt</button>
+          </div>
+          <p class="small muted" style="margin-top:10px">Stänger du bara fönstret fortsätter bevakningen i bakgrunden. Ikonen nere vid klockan öppnar fönstret igen.</p>
+        </div>
+
+        <div class="card section">
+          <details class="adv"><summary>Avancerat: riktiga försäljningspriser och Facebook Marketplace</summary>
+            <p class="small muted" style="margin-top:8px">Med en gratis utvecklarnyckel från Tradera lär sig programmet vad saker faktiskt säljs för, från avslutade auktioner, och varnar för auktioner som slutar inom två timmar långt under det. Utan nyckel används Blockets utropspriser nedskalade till typiskt försäljningsvärde.</p>
+            <div class="row">
+              <div class="field"><label>Tradera App ID</label><input id="s_tid"></div>
+              <div class="field"><label>Tradera App Key</label><input id="s_tkey"></div>
+              <button class="auto" onclick="openUrl('https://api.tradera.com/register')">Skaffa nyckel</button>
+            </div>
+            <p class="small muted">Facebook har inget öppet API. Med ett gratiskonto på apify.com (ca 6 öre per annons, 5 dollar gratis per månad) kollar programmet Marketplace några gånger om dagen för bevakningar som har en Marketplace-sök-URL (läggs in under Ändra på bevakningen).</p>
+            <div class="row">
+              <div class="field"><label>Apify-token</label><input id="s_apify"></div>
+              <button class="auto" onclick="openUrl('https://apify.com')">apify.com</button>
+            </div>
+            <button onclick="saveSettings(['tradera_app_id','tradera_app_key','apify_token'])">Spara</button>
+          </details>
+        </div>
+
+        <div class="card section" id="licenseCard">
+          <h2>🔑 Licens</h2>
+          <p id="licText" class="small"></p>
+          <div class="row">
+            <div class="field"><label>E-post</label><input id="l_email" placeholder="den du köpte med"></div>
+            <div class="field"><label>Licensnyckel</label><input id="l_key" placeholder="BDF-XXXXX-XXXXX-XXXXX"></div>
+          </div>
+          <div class="row"><button class="primary" onclick="activate()">Aktivera</button><button onclick="openUrl(state.sales_url+'#kop')">Köp licens, 249 kr</button></div>
+        </div>
+
+        <div class="card section">
+          <details class="adv"><summary>Teknisk logg</summary><div class="log" id="log" style="margin-top:10px"></div></details>
+        </div>
+      </section>
+
+      <section id="view-help" class="hidden">
+        <h1>Hjälp</h1>
+        <div class="card section">
+          <h2>Så läser du ett fynd</h2>
+          <p>Varje fynd visar <b>pris</b>, vad varan <b>vanligen säljs för</b> (inte vad folk begär, det är ofta 40–50 % högre) och hur mycket du ungefär <b>behåller</b> efter försäljningskostnader. Referensen blandar alla annonser i bevakningen som klarar filtren, så kolla att det är rätt modell och skick innan du åker.</p>
+          <p>Bra fynd försvinner på minuter. Skriv till säljaren direkt, fråga om det finns kvar och när du kan hämta.</p>
+        </div>
+        <div class="card section">
+          <h2>Vanliga frågor</h2>
+          <details><summary>Måste datorn vara på?</summary><p class="small">Ja, bevakningen körs på din dator. Slå på "Starta automatiskt med Windows" och stäng av viloläge, eller kör på en gammal laptop som får stå på.</p></details>
+          <details><summary>Varför fick jag inga larm första omgången?</summary><p class="small">Första gången lär programmet bara in prisnivåerna, annars skulle du drunkna i gamla annonser. Larmen börjar från nästa koll.</p></details>
+          <details><summary>Kan programmet köpa åt mig?</summary><p class="small">Nej, avsiktligt. Blocket tillåter det inte och det skulle köpa fel saker. Programmet ger dig försprånget; du bestämmer.</p></details>
+          <details><summary>Hur vet det vad saker säljs för?</summary><p class="small">Med en gratis nyckel från Tradera (Inställningar, Avancerat) hämtas avslutade auktioner för varje bevakning. Utan nyckel skalas Blockets utropspriser ned med en faktor som är uppmätt mot Tradera.</p></details>
+          <details><summary>Elcyklar och stöldgods</summary><p class="small">Kontrollera alltid ramnumret mot polisens register innan du betalar. Ett för bra pris är ofta ett för bra pris.</p></details>
+          <details><summary>Var lagras mina uppgifter?</summary><p class="small">Bara på din dator. Ingenting skickas någonstans utom pushnotiserna till din egen kanal.</p></details>
+          <details><summary>Något fungerar inte</summary><p class="small">Titta i Inställningar, Teknisk logg. Skicka gärna raderna där till supporten, så löser vi det.</p></details>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- onboarding -->
+<div class="overlay hidden" id="wizard">
+  <div class="wizard">
+    <div class="dots"><i id="d1" class="on"></i><i id="d2"></i><i id="d3"></i></div>
+
+    <div id="w1">
+      <h1>Hej! Två minuter, sedan kommer fynden till telefonen.</h1>
+      <p class="muted">Programmet bevakar Blocket åt dig dygnet runt och pushar när något ligger långt under vad det faktiskt säljs för. Först kopplar vi din telefon.</p>
+      <ol class="steps">
+        <li>Installera appen <b>ntfy</b> på telefonen. <a href="#" onclick="openUrl('https://apps.apple.com/app/ntfy/id1625396347');return false">iPhone</a> · <a href="#" onclick="openUrl('https://play.google.com/store/apps/details?id=io.heckel.ntfy');return false">Android</a></li>
+        <li>Öppna ntfy, tryck på <b>+</b> och skriv in din privata kanal:
+          <div class="code" style="margin-top:8px"><span id="topicShow2"></span><button class="auto" onclick="copyTopic()">Kopiera</button></div></li>
+        <li>Tryck här så skickar vi en testnotis: <button onclick="testPush('w')" style="margin-left:6px">Skicka testnotis</button> <span id="pushResultW" class="small"></span></li>
+      </ol>
+      <div class="wfoot"><a href="#" class="small muted" onclick="wstep(2);return false">Jag fixar telefonen senare</a><button class="primary big" onclick="wstep(2)">Nästa</button></div>
+    </div>
+
+    <div id="w2" class="hidden">
+      <h1>Vad vill du hitta?</h1>
+      <p class="muted">Färdiga bevakningar för saker som brukar gå att sälja vidare med marginal. Du kan ändra allt senare.</p>
+      <div class="field" style="max-width:280px"><label>Region</label><select id="w_location"></select></div>
+      <div class="grid" id="w_watches"></div>
+      <div class="wfoot"><button onclick="wstep(1)">Tillbaka</button><button class="primary big" onclick="wstep(3)">Nästa</button></div>
+    </div>
+
+    <div id="w3" class="hidden">
+      <h1>Klart!</h1>
+      <p class="muted" id="w_summary"></p>
+      <ol class="steps">
+        <li>Programmet kollar Blocket var 10:e minut och ligger kvar i bakgrunden, även om du stänger fönstret. Ikonen nere vid klockan öppnar det igen.</li>
+        <li>Första omgången lär bara in prisnivåerna. Från nästa koll kommer fynden hit och till telefonen.</li>
+        <li>Ett fynd är en ledtråd, inte ett löfte. Kolla annonsen, var snabb, och kontrollera ramnummer på cyklar.</li>
+      </ol>
+      <div class="wfoot"><button onclick="wstep(2)">Tillbaka</button><button class="primary big" onclick="finishWizard()">Starta bevakning</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- watch editor -->
+<div class="modal-bg hidden" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2 id="m_title">Ny bevakning</h2>
+    <div class="row">
+      <div class="field" style="flex:0 0 70px"><label>Ikon</label><input id="m_icon" maxlength="2"></div>
+      <div class="field"><label>Namn</label><input id="m_name" placeholder="t.ex. Stokke Tripp Trapp"></div>
+    </div>
+    <div class="field"><label>Söktext på Blocket</label><input id="m_q" placeholder="det du skulle skriva i Blockets sökruta"></div>
+    <div class="row">
+      <div class="field"><label>Lägsta pris (kr)</label><input id="m_min" type="number"></div>
+      <div class="field"><label>Högsta pris (kr)</label><input id="m_max" type="number"></div>
+    </div>
+    <div class="field"><label>Måste innehålla något av (kommaseparerat, valfritt)</label><input id="m_must" placeholder="t.ex. fox, donkey, cameleon"></div>
+    <div class="field"><label>Uteslut ord (kommaseparerat)</label><input id="m_excl"></div>
+    <div class="row">
+      <div class="field"><label>Larma alltid under (kr, valfritt)</label><input id="m_below" type="number"></div>
+      <div class="field"><label>Larma vid % under (tomt = standard)</label><input id="m_disc" type="number"></div>
+    </div>
+    <details class="adv"><summary>Facebook Marketplace-URL (valfritt)</summary><div class="field" style="margin-top:8px"><input id="m_mp" placeholder="https://www.facebook.com/marketplace/..."></div></details>
+    <div class="wfoot">
+      <button class="danger" id="m_delete" onclick="deleteWatch()">Ta bort</button>
+      <div class="row auto"><button onclick="closeModal()">Avbryt</button><button class="primary" onclick="saveWatch()">Spara</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let state = null, view = 'deals', editing = null, lastDealsKey = '', settingsFilled = false, watchesKey = '';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const kr = n => Math.round(n).toLocaleString('sv-SE') + ' kr';
+
+async function get(url){ const r = await fetch(url); return r.json(); }
+async function post(url, body){ const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body||{})}); return r.json(); }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200); }
+function openUrl(u){ post('/api/open', {url:u}); }
+
+function go(v){ view=v; document.querySelectorAll('.nav').forEach(a=>a.classList.toggle('active', a.dataset.view===v)); ['deals','watches','settings','help'].forEach(x=>$('view-'+x).classList.toggle('hidden', x!==v)); if(v==='settings') fillSettings(true); }
+document.querySelectorAll('.nav').forEach(a=>a.onclick=()=>go(a.dataset.view));
+
+function ago(ms){ const m=Math.max(0,(Date.now()-ms)/60000); if(m<1)return 'nyss'; if(m<60)return Math.round(m)+' min sedan'; const h=m/60; if(h<24)return Math.round(h)+' tim sedan'; return Math.round(h/24)+' dagar sedan'; }
+
+function renderDeals(){
+  const d = state.deals; const key = d.length + ':' + (d[0]?d[0].ms:0) + ':' + state.running;
+  if(key===lastDealsKey) return; lastDealsKey=key;
+  const box=$('deals');
+  if(!d.length){ box.innerHTML = `<div class="card empty"><div class="big">🕵️</div><b>Inga fynd än.</b><br>${state.running?'Första omgången lär in prisnivåer. Sedan dyker fynden upp här och i telefonen.':'Tryck på Starta bevakning uppe till höger.'}</div>`; return; }
+  const icons = Object.fromEntries(state.watches.map(w=>[w.name,w.icon||'🔎']));
+  box.innerHTML = d.map(x=>`
+    <div class="card deal">
+      <div class="ic">${icons[x.watch]||'🔎'}</div>
+      <div>
+        <div class="title">${esc(x.title)}</div>
+        <div class="meta">${kr(x.price)} · ${esc(x.location||'')}${x.location?' · ':''}${esc(x.source)}${x.shipping?' · kan skickas':''}${x.drop?' · prissänkning':''} · ${ago(x.ms)}</div>
+        <div class="sub">${esc(x.watch)} säljs vanligen för ca <b>${kr(x.reference)}</b>${x.margin?` · du behåller ca <b>${kr(x.margin)}</b> efter försäljningskostnader`:''}</div>
+      </div>
+      <div class="right">
+        <span class="badge ${x.under_pct>=45?'':'warm'}">${Math.round(x.under_pct)} % under</span>
+        <div class="actions"><button class="primary" onclick="openUrl('${esc(x.url)}')">Öppna annons</button></div>
+      </div>
+    </div>`).join('');
+}
+
+function watchCard(w, wiz){
+  return `<div class="card watch">
+    <div class="ic">${esc(w.icon||'🔎')}</div>
+    <div class="body"><div class="name">${esc(w.name)}</div><div class="blurb">${esc(w.blurb||('Söker "'+w.q+'"'))}</div>${wiz?'':`<span class="edit" onclick="editWatch('${esc(w.name)}')">Ändra</span>`}</div>
+    <label class="switch"><input type="checkbox" ${w.enabled!==false?'checked':''} onchange="toggleWatch('${esc(w.name)}',this.checked)"><span></span></label>
+  </div>`;
+}
+function renderWatches(){
+  const key = JSON.stringify(state.watches.map(w=>[w.name,w.enabled,w.blurb,w.icon]));
+  if(key===watchesKey) return; watchesKey=key;
+  $('watches').innerHTML = state.watches.map(w=>watchCard(w,false)).join('') + `<div class="card watch add" onclick="editWatch(null)">＋ Lägg till egen bevakning</div>`;
+  $('w_watches').innerHTML = state.watches.map(w=>watchCard(w,true)).join('');
+}
+async function toggleWatch(name, on){ await post('/api/watch/toggle',{name, enabled:on}); refresh(); }
+async function resetWatches(){ if(confirm('Återställ bevakningarna till standard? Egna bevakningar tas bort.')){ await post('/api/watch/reset'); watchesKey=''; refresh(); } }
+
+function editWatch(name){
+  editing = name; const w = name? state.watches.find(x=>x.name===name) : null;
+  $('m_title').textContent = w? 'Ändra bevakning' : 'Ny bevakning';
+  $('m_icon').value = w? (w.icon||'🔎') : '🔎'; $('m_name').value = w?w.name:''; $('m_q').value = w?w.q:'';
+  $('m_min').value = w?(w.min_price||''):''; $('m_max').value = w?(w.max_price||''):'';
+  $('m_must').value = w?(w.must_words||[]).join(', '):''; $('m_excl').value = w?(w.exclude_words||[]).join(', '):'sökes, söker, köpes, önskas, defekt, trasig, reservdel, tillbehör';
+  $('m_below').value = w?(w.alert_below||''):''; $('m_disc').value = w?(w.discount_alert_pct||''):''; $('m_mp').value = w?(w.marketplace_url||''):'';
+  $('m_delete').classList.toggle('hidden', !w);
+  $('modalBg').classList.remove('hidden'); $('m_name').focus();
+}
+function closeModal(){ $('modalBg').classList.add('hidden'); }
+async function saveWatch(){
+  const w = {icon:$('m_icon').value, name:$('m_name').value, q:$('m_q').value, min_price:$('m_min').value, max_price:$('m_max').value,
+             must_words:$('m_must').value, exclude_words:$('m_excl').value, alert_below:$('m_below').value, discount_alert_pct:$('m_disc').value, marketplace_url:$('m_mp').value};
+  const r = await post('/api/watch/save', {watch:w, original:editing});
+  if(!r.ok){ toast(r.error==='exists'?'Det finns redan en bevakning med det namnet.':'Namn och söktext behövs.'); return; }
+  closeModal(); watchesKey=''; toast('Sparat'); refresh();
+}
+async function deleteWatch(){ if(editing && confirm('Ta bort bevakningen "'+editing+'"?')){ await post('/api/watch/delete',{name:editing}); closeModal(); watchesKey=''; refresh(); } }
+
+function fillSettings(force){
+  if(settingsFilled && !force) return; settingsFilled=true;
+  const s=state.settings;
+  $('topicShow').textContent=s.ntfy_topic; $('topicShow2').textContent=s.ntfy_topic; $('s_topic').value=s.ntfy_topic;
+  const opts = state.regions.map(([c,n])=>`<option value="${c}" ${c===s.location?'selected':''}>${n}</option>`).join('');
+  $('s_location').innerHTML=opts; $('w_location').innerHTML=opts;
+  $('s_poll').value=s.poll_minutes; $('s_disc').value=s.discount_alert_pct; $('s_auto').checked=!!s.autostart;
+  $('s_tid').value=s.tradera_app_id||''; $('s_tkey').value=s.tradera_app_key||''; $('s_apify').value=s.apify_token||'';
+  $('l_email').value=s.license_email||''; $('l_key').value=s.license_key||'';
+}
+async function saveSettings(keys){
+  const map={ntfy_topic:()=>$('s_topic').value, location:()=>$('s_location').value, poll_minutes:()=>$('s_poll').value, discount_alert_pct:()=>$('s_disc').value,
+             autostart:()=>$('s_auto').checked, tradera_app_id:()=>$('s_tid').value, tradera_app_key:()=>$('s_tkey').value, apify_token:()=>$('s_apify').value};
+  const body={}; keys.forEach(k=>body[k]=map[k]());
+  await post('/api/settings', body); toast('Sparat'); settingsFilled=false; await refresh(); fillSettings(true);
+}
+function copyTopic(){ const t=state.settings.ntfy_topic; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Kopierat: '+t)).catch(()=>prompt('Kopiera kanalnamnet:', t)); }
+async function testPush(where){
+  const el = $(where==='w'?'pushResultW':'pushResult'); el.textContent='Skickar ...'; el.className='small';
+  const r = await post('/api/test_push', {topic: where==='w'? state.settings.ntfy_topic : ($('s_topic').value||state.settings.ntfy_topic)});
+  el.textContent = r.ok? '✓ Skickad, kolla telefonen!' : 'Kunde inte skicka. Kontrollera internet.'; el.className = r.ok?'small ok-text':'small bad-text';
+}
+async function activate(){
+  const r = await post('/api/activate', {email:$('l_email').value, key:$('l_key').value});
+  toast(r.ok? 'Licensen är aktiverad. Tack!' : 'Nyckeln matchar inte e-postadressen.'); if(r.ok) refresh();
+}
+async function toggleRun(){
+  if(state.running){ await post('/api/stop'); }
+  else { const r = await post('/api/start'); if(!r.ok){ toast(r.error==='expired'?'Provperioden är slut. Aktivera en licens under Inställningar.':'Slå på minst en bevakning först.'); go(r.error==='expired'?'settings':'watches'); } }
+  refresh();
+}
+async function checkNow(){ const r = await post('/api/check_now'); if(!r.ok){ toast(r.error==='expired'?'Provperioden är slut.':'Slå på minst en bevakning först.'); } else toast('Kollar nu ...'); refresh(); }
+async function quitApp(){ if(confirm('Avsluta programmet helt? Då slutar bevakningen tills du startar det igen.')){ await post('/api/quit'); document.body.innerHTML='<div class="empty" style="padding-top:120px"><div class="big">👋</div>Programmet är avslutat. Du kan stänga fönstret.</div>'; } }
+
+function renderStatus(){
+  const st=$('status'); st.classList.toggle('on', state.running);
+  $('statusText').textContent = state.running ? (state.checking? 'Kollar Blocket nu ...' : 'Bevakar · nästa koll om '+Math.max(1,Math.round((state.next_check_s||0)/60))+' min') : 'Pausad';
+  $('btnToggle').textContent = state.running? 'Pausa' : 'Starta bevakning';
+  const L=state.license, b=$('trialBadge');
+  b.className = 'trial ' + (L.kind==='licensed'?'ok':(L.kind==='expired'?'bad':''));
+  b.textContent = L.kind==='licensed' ? '✓ Licens aktiv' : (L.kind==='expired' ? 'Provperioden är slut' : 'Provperiod: '+L.days+' dagar kvar');
+  $('licText').innerHTML = L.kind==='licensed' ? `<span class="ok-text">Licens aktiv för ${esc(L.email)}.</span>` : (L.kind==='expired' ? '<span class="bad-text">Provperioden är slut.</span> Köp en licens (249 kr, engångspris) så får du en nyckel till din e-post.' : `Du har <b>${L.days} dagar</b> kvar av provperioden. Efter köp får du en nyckel kopplad till din e-post.`);
+  $('ver').textContent = state.version;
+  $('log').textContent = state.log.join('\n');
+}
+
+let wstepN=1;
+function wstep(n){ wstepN=n; [1,2,3].forEach(i=>{ $('w'+i).classList.toggle('hidden', i!==n); $('d'+i).classList.toggle('on', i<=n); });
+  if(n===3){ const on=state.watches.filter(w=>w.enabled!==false).length; const reg=$('w_location').selectedOptions[0]?.textContent||'Hela Sverige'; $('w_summary').textContent = `${on} bevakningar påslagna i ${reg}. Kanal: ${state.settings.ntfy_topic}.`; } }
+async function finishWizard(){
+  await post('/api/settings', {onboarded:true, location:$('w_location').value});
+  $('wizard').classList.add('hidden'); await post('/api/start'); toast('Bevakningen är igång'); refresh();
+}
+
+async function refresh(){
+  try{ state = await get('/api/state'); }catch(e){ return; }
+  renderStatus(); renderDeals(); renderWatches(); fillSettings(false);
+  if(!state.onboarded){ $('wizard').classList.remove('hidden'); }
+}
+refresh(); setInterval(refresh, 4000);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>

@@ -161,20 +161,18 @@ running this at a high rate or for anything commercial; the default is one reque
 
 ### Desktop edition of the deal finder (for people without Python)
 
-Version 1.1 is the sellable edition: Swedish or English alerts, a Deals tab with every alert and a link, a
-"Check now" button, optional Facebook Marketplace (Apify token + per-watch search URL), and a 14-day trial with
-offline licence keys (`tools/keygen.py buyer@example.com` makes a key from the `license_secret` in `secrets.json`;
-`build_app.bat` bakes the same secret into the .exe as the git-ignored `app/_secret.py`). The buyer guide is
-`app/GUIDE_SV.md` (copied next to the .exe as `LAS_MIG_FORST.md`) and the sales page `app/site/index.html` is
-published at https://timowastaken.github.io/tradingbot/dealfinder/ by `publish.py`.
-
-`app/blocket_app.py` wraps the same deal finder in a small window: watches with add/edit/remove, settings (ntfy
-topic with a test button, interval, region, start with Windows, Swedish or English), and a live log. Settings and
-the journal live in `%APPDATA%\BlocketDealFinder`. `build_app.bat` builds it into a single `dist\BlocketDealFinder.exe`
-with PyInstaller (about 15 MB, no console window). The exe is unsigned, so Windows SmartScreen shows a warning on
-first start; click "More info" then "Run anyway".
-
----
+`app/` is the sellable Windows edition, version 2.0: a local web app in an Edge/Chrome app window instead of a
+tkinter form. `app/core.py` holds config, default watches and the background worker (Blocket + Tradera +
+Marketplace through `bot/`), `app/server.py` is a 127.0.0.1-only HTTP server with a JSON API, `app/ui/index.html`
+is the whole interface (Swedish: a three-step first-run guide, a Deals feed, watch cards with toggles, settings
+with the advanced parts folded away, help), and `app/blocket_app.py` is the launcher: it starts the server, opens
+the window, keeps running in the background with a tray icon, and re-opens the window if the .exe is started
+again. Alerts are pushed in Swedish or English (`cfg["language"]`). 14-day trial, then an offline licence key
+(`tools/keygen.py buyer@example.com` makes one from the `license_secret` in `secrets.json`; `build_app.bat`
+bakes the same secret into the .exe as the git-ignored `app/_secret.py`). `build_app.bat` builds
+`dist/BlocketDealFinder.exe` (~23 MB) and copies the buyer guide `app/GUIDE_SV.md` next to it. The sales page
+`app/site/index.html` and the .exe are published by `publish.py` under https://timowastaken.github.io/tradingbot/dealfinder/
+so buyers never see GitHub.
 
 ## Backtest results (hypothetical, computed after the fact)
 

@@ -471,6 +471,9 @@ def build(pub: dict) -> Path:
         for f in site.iterdir():
             if f.is_file():
                 shutil.copy2(f, dest / f.name)
+        exe = ROOT / "dist" / "BlocketDealFinder.exe"      # the download itself is served from the page's folder
+        if exe.exists():
+            shutil.copy2(exe, dest / exe.name)
     (OUT / "README.md").write_text(
         f"# {pub.get('site_title', 'Tradingbot')}\n\nAutomatically published paper-trading journals of seven rule-based trading bots "
         f"(crypto, Swedish stocks, US stocks, fund rotation, Polymarket, crypto 15-minute markets, copy-trading). Live page: https://{pub.get('github_user', 'USER').lower()}.github.io/{pub.get('repo', 'tradingbot')}/\n"

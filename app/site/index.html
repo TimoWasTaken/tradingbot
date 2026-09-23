@@ -36,12 +36,12 @@
 <header>
   <h1>Få pushen när något på Blocket ligger 30&nbsp;% under vad det faktiskt säljs för.</h1>
   <p class="lead">Blocket Deal Finder är ett litet Windows-program som bevakar Blocket (och Tradera-auktioner samt Facebook Marketplace om du vill) dygnet runt, lär sig riktiga försäljningspriser, och pushar till din telefon inom minuter från att en annons läggs ut. Du köper. Programmet köper aldrig.</p>
-  <a class="cta" href="#ladda-ner">Prova gratis i 14 dagar</a>
+  <a class="cta" href="BlocketDealFinder.exe" download>Ladda ner, prova gratis i 14 dagar</a>
   <a class="cta alt" href="#kop">Köp licens, 249 kr</a>
   <p class="small">Windows 10/11. Ingen installation, en fil. Allt körs på din dator.</p>
 </header>
 
-<img class="shot" src="screenshot.png" alt="Programmets fönster med bevakningar, fynd och inställningar" onerror="this.style.display='none'">
+<img class="shot" src="screenshot.png" alt="Programmets fönster med fyndlistan" onerror="this.style.display='none'">
 
 <h2>Så här ser ett larm ut</h2>
 <div class="alert">Fynd #12: Bugaboo 54% under
@@ -63,18 +63,18 @@ https://www.blocket.se/annons/...</div>
 
 <h2 id="ladda-ner">Kom igång på 5 minuter</h2>
 <ol>
-  <li><a href="https://github.com/TimoWasTaken/tradingbot/releases/latest/download/BlocketDealFinder.exe">Ladda ner BlocketDealFinder.exe</a> och dubbelklicka. Windows kan varna eftersom filen inte är signerad av en stor leverantör: klicka <i>Mer information</i> och <i>Kör ändå</i>.</li>
-  <li>Installera appen <b>ntfy</b> på telefonen, prenumerera på ett hemligt ämnesnamn, skriv samma namn i programmet och skicka en testnotis.</li>
-  <li>Välj bevakningar och tryck <b>Starta bevakning</b>. Första passet lär bara in prisnivåerna; larmen börjar från nästa.</li>
+  <li><a href="BlocketDealFinder.exe" download>Ladda ner BlocketDealFinder.exe</a> och dubbelklicka. Windows kan varna eftersom filen inte är signerad av en stor leverantör: klicka <i>Mer information</i> och <i>Kör ändå</i>.</li>
+  <li>Programmet guidar dig: installera appen <b>ntfy</b> på telefonen, skriv in din privata kanal och skicka en testnotis.</li>
+  <li>Slå på det du vill hitta och tryck <b>Starta bevakning</b>. Första omgången lär bara in prisnivåerna; fynden börjar från nästa.</li>
 </ol>
-<p class="small">Hela guiden följer med programmet (<i>LAS_MIG_FORST.md</i>) och finns <a href="https://github.com/TimoWasTaken/tradingbot/blob/main/app/GUIDE_SV.md">här</a>.</p>
+<p class="small">Fönstret kan stängas, bevakningen fortsätter i bakgrunden (ikonen nere vid klockan). All hjälp finns inne i programmet.</p>
 
 <h2 id="kop">Pris</h2>
 <div class="card">
   <div class="price">249 kr</div>
   <p>Engångspris, en person, hur många datorer som helst. Alla uppdateringar av version 1 ingår. 14 dagars gratis provperiod först, utan kortuppgifter.</p>
   <p style="margin-top:12px"><a class="cta" href="#kop">Köp licens (betallänk kommer inom kort)</a></p>
-  <p class="small">Efter köpet får du en licensnyckel kopplad till din e-postadress inom ett dygn. Skriv in e-post och nyckel under Inställningar &gt; Licens.</p>
+  <p class="small">Efter köpet får du en licensnyckel kopplad till din e-postadress inom ett dygn. Skriv in e-post och nyckel under Inställningar, Licens, i programmet.</p>
 </div>
 
 <h2>Vanliga frågor</h2>
@@ -84,10 +84,10 @@ https://www.blocket.se/annons/...</div>
 <details><summary>Varför varnar Windows när jag startar filen?</summary><p>Programmet är inte signerat med ett dyrt kodsigneringscertifikat, så SmartScreen visar en varning första gången. Källkoden är öppen på GitHub om du vill granska den.</p></details>
 <details><summary>Vad kostar Facebook Marketplace-delen?</summary><p>Facebook har inget öppet API. Programmet kan använda tjänsten Apify som hämtar annonser åt dig för cirka 6 öre per annons, med 5 dollar gratis per månad. Helt valfritt.</p></details>
 <details><summary>Blocket ändrar sin sajt, vad händer då?</summary><p>Då uppdaterar jag programmet. Uppdateringar av version 1 ingår i priset.</p></details>
-<details><summary>Fungerar det på Mac?</summary><p>Inte som färdig fil ännu. Källkoden är Python och går att köra på Mac om du kan lite terminal.</p></details>
+<details><summary>Fungerar det på Mac?</summary><p>Inte som färdig fil ännu.</p></details>
 
 <footer>
-  <p>Blocket Deal Finder är ett fristående verktyg och har inget samarbete med Blocket, Tradera, Meta eller Apify. Inga garantier om fynd eller vinst: programmet ger information, besluten är dina. Källkod: <a href="https://github.com/TimoWasTaken/tradingbot">github.com/TimoWasTaken/tradingbot</a>. Kontakt: öppna ett ärende på GitHub.</p>
+  <p>Blocket Deal Finder är ett fristående verktyg och har inget samarbete med Blocket, Tradera, Meta eller Apify. Inga garantier om fynd eller vinst: programmet ger information, besluten är dina. Kontakt: KONTAKT_EPOST. Källkoden är öppen för den som vill granska den.</p>
 </footer>
 </div>
 </body>
