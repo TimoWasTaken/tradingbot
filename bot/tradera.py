@@ -137,9 +137,24 @@ class SoldRegister:
         self._cache = None
 
 
+TEXT = {
+    "en": {"sold": "sold on Tradera", "asked": "asked on Blocket",
+           "line": "Ends in {m:.0f} min, {b} bids, next bid {nb} kr.",
+           "body": ("'{w}' usually goes for {ref} kr ({kind}, {n} samples), so this is {u:.0f}% under. Others may snipe in the last "
+                    "seconds; decide your max and stick to it."),
+           "title": "Auction #{id}: {w} {u:.0f}% under, {m:.0f} min left"},
+    "sv": {"sold": "sålt på Tradera", "asked": "utropspris på Blocket",
+           "line": "Slutar om {m:.0f} min, {b} bud, nästa bud {nb} kr.",
+           "body": ("'{w}' går vanligen för {ref} kr ({kind}, {n} exempel), så detta är {u:.0f}% under. Andra kan lägga bud i sista "
+                    "sekunden; bestäm ditt max och håll dig till det."),
+           "title": "Auktion #{id}: {w} {u:.0f}% under, {m:.0f} min kvar"},
+}
+
+
 class TraderaWatcher:
     def __init__(self, cfg: dict, api: TraderaAPI, jdir: Path, notifier, log, blocket_reference=None):
         self.cfg = cfg
+        self.tx = TEXT.get(str(cfg.get("language", "en")).lower()[:2], TEXT["en"])
         self.tcfg = cfg.get("tradera", {})
         self.api = api
         self.jdir = Path(jdir)
@@ -171,11 +186,11 @@ class TraderaWatcher:
         """(reference, kind, samples): real sold prices when we have enough, else Blocket asking prices."""
         med, n = self.sold.median(watch["name"], int(self.tcfg.get("min_sold_samples", 8)))
         if med:
-            return med, "sold on Tradera", n
+            return med, self.tx["sold"], n
         if self.blocket_reference:
             ref, n2 = self.blocket_reference(watch)
             if ref:
-                return ref, "asked on Blocket", n2
+                return ref, self.tx["asked"], n2
         return None, "", 0
 
     # ---------- sold-price register ----------
@@ -239,11 +254,11 @@ class TraderaWatcher:
                    "reference_kind": kind, "discount_pct": round(under, 1), "bids": it["bids"],
                    "ends": it["end"].strftime("%Y-%m-%d %H:%M"), "minutes_left": round(left), "url": it["url"]}
             self._append("auction_alerts.csv", AUCTION_ALERT_FIELDS, row)
-            msg = (f"{it['title']}\nEnds in {left:.0f} min, {it['bids']} bids, next bid {fmt_num(it['next_bid'], 0)} kr.\n"
-                   f"'{watch['name']}' usually goes for {fmt_num(ref, 0)} kr ({kind}, {n} samples), so this is {under:.0f}% under. "
-                   f"Others may snipe in the last seconds; decide your max and stick to it.\n{it['url']}")
+            tx = self.tx
+            msg = (f"{it['title']}\n" + tx["line"].format(m=left, b=it['bids'], nb=fmt_num(it['next_bid'], 0)) + "\n"
+                   + tx["body"].format(w=watch['name'], ref=fmt_num(ref, 0), kind=kind, n=n, u=under) + f"\n{it['url']}")
             self.log(f"AUCTION #{row['id']} [{watch['name']}] {it['title']} next bid {it['next_bid']:.0f} vs ref {ref:.0f}, {left:.0f} min left {it['url']}")
-            self.notifier.send(f"Auction #{row['id']}: {watch['name']} {under:.0f}% under, {left:.0f} min left", msg, priority=4, tags=["hourglass"])
+            self.notifier.send(tx["title"].format(id=row['id'], w=watch['name'], u=under, m=left), msg, priority=4, tags=["hourglass"])
             alerts += 1
         cutoff = now_ms() - 7 * 86_400_000
         self.state["alerted"] = {k: v for k, v in self.state["alerted"].items() if int(v) > cutoff}

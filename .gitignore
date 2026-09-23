@@ -16,3 +16,6 @@ __pycache__/
 build/
 dist/
 *.spec
+
+# licence secret baked into the desktop build
+app/_secret.py

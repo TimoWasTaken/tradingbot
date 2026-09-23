@@ -161,6 +161,13 @@ running this at a high rate or for anything commercial; the default is one reque
 
 ### Desktop edition of the deal finder (for people without Python)
 
+Version 1.1 is the sellable edition: Swedish or English alerts, a Deals tab with every alert and a link, a
+"Check now" button, optional Facebook Marketplace (Apify token + per-watch search URL), and a 14-day trial with
+offline licence keys (`tools/keygen.py buyer@example.com` makes a key from the `license_secret` in `secrets.json`;
+`build_app.bat` bakes the same secret into the .exe as the git-ignored `app/_secret.py`). The buyer guide is
+`app/GUIDE_SV.md` (copied next to the .exe as `LAS_MIG_FORST.md`) and the sales page `app/site/index.html` is
+published at https://timowastaken.github.io/tradingbot/dealfinder/ by `publish.py`.
+
 `app/blocket_app.py` wraps the same deal finder in a small window: watches with add/edit/remove, settings (ntfy
 topic with a test button, interval, region, start with Windows, Swedish or English), and a live log. Settings and
 the journal live in `%APPDATA%\BlocketDealFinder`. `build_app.bat` builds it into a single `dist\BlocketDealFinder.exe`

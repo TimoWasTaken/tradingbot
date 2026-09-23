@@ -463,6 +463,14 @@ def build(pub: dict) -> Path:
             + "".join(body) + "</div></body></html>")
     (OUT / "index.html").write_text(page, encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
+    site = ROOT / "app" / "site"                     # the desktop edition's sales page, published under /dealfinder/
+    if site.exists():
+        import shutil
+        dest = OUT / "dealfinder"
+        dest.mkdir(exist_ok=True)
+        for f in site.iterdir():
+            if f.is_file():
+                shutil.copy2(f, dest / f.name)
     (OUT / "README.md").write_text(
         f"# {pub.get('site_title', 'Tradingbot')}\n\nAutomatically published paper-trading journals of seven rule-based trading bots "
         f"(crypto, Swedish stocks, US stocks, fund rotation, Polymarket, crypto 15-minute markets, copy-trading). Live page: https://{pub.get('github_user', 'USER').lower()}.github.io/{pub.get('repo', 'tradingbot')}/\n"

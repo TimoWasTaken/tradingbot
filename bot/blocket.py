@@ -104,8 +104,43 @@ def passes(listing: dict, watch: dict) -> tuple[bool, str]:
 
 # ---------------- deal finder ----------------
 
+TEXT = {
+    "en": {
+        "ref_own": "your own reference price",
+        "ref_sold": "real sale prices on Tradera, {n} sales{st}",
+        "st_low": ", only {p:.0f}% of listings actually sell",
+        "ref_few": "only {n} Tradera sales, so the lower of those and adjusted Blocket asks",
+        "ref_ask": "asking prices on Blocket scaled to typical sale value ({p:.0f}% of the ask median)",
+        "where": "{price} kr in {loc} on {site}", "ship": ", can be shipped", "buynow": ", buy now", "age": ", posted {m:.0f} min ago",
+        "body": ("'{w}' usually SELLS for about {ref} kr (basis: {kind}), so this is {d:.0f}% under. After ~{c:.0f}% selling costs "
+                 "you would keep ~{resale} kr = ~{margin} kr margin, before transport. Check the exact model: the reference "
+                 "mixes all '{w}' listings that pass your filters."),
+        "title": "Deal #{id}: {w} {d:.0f}% under", "drop": " (price drop)", "reference": "reference",
+        "site_blocket": "Blocket", "site_marketplace": "Facebook Marketplace",
+    },
+    "sv": {
+        "ref_own": "ditt eget referenspris",
+        "ref_sold": "riktiga försäljningspriser på Tradera, {n} affärer{st}",
+        "st_low": ", bara {p:.0f}% av annonserna säljs faktiskt",
+        "ref_few": "bara {n} Tradera-affärer, så det lägsta av dem och nedskalade Blocket-priser",
+        "ref_ask": "utropspriser på Blocket nedskalade till typiskt försäljningsvärde ({p:.0f}% av medianen)",
+        "where": "{price} kr i {loc} på {site}", "ship": ", kan skickas", "buynow": ", köp nu", "age": ", publicerad för {m:.0f} min sedan",
+        "body": ("'{w}' SÄLJS vanligen för ca {ref} kr (grund: {kind}), så detta är {d:.0f}% under. Efter ca {c:.0f}% försäljningskostnader "
+                 "behåller du ca {resale} kr = ca {margin} kr marginal, före transport. Kolla exakt modell: referensen blandar alla "
+                 "'{w}'-annonser som klarar dina filter."),
+        "title": "Fynd #{id}: {w} {d:.0f}% under", "drop": " (prissänkning)", "reference": "referens",
+        "site_blocket": "Blocket", "site_marketplace": "Facebook Marketplace",
+    },
+}
+
+
+def texts(cfg: dict) -> dict:
+    return TEXT.get(str(cfg.get("language", "en")).lower()[:2], TEXT["en"])
+
+
 class DealFinder:
     def __init__(self, cfg: dict, jdir: Path, notifier, log):
+        self.tx = texts(cfg)
         self.cfg = cfg
         self.jdir = Path(jdir)
         self.jdir.mkdir(parents=True, exist_ok=True)
@@ -151,25 +186,25 @@ class DealFinder:
         """(reference = what the item is likely worth when SOLD, sample count).
         Priority: a pinned reference_price; real Tradera sale prices; with only a few sales, the lower of those and
         the scaled asking prices; otherwise Blocket asking prices scaled down by ask_to_sold_factor."""
+        tx = self.tx
         if watch.get("reference_price"):
-            self.last_reference_kind = "your own reference price"
+            self.last_reference_kind = tx["ref_own"]
             return float(watch["reference_price"]), 0
         ask, n_ask = self.asking_reference(watch)
         ask_adj = ask * self.ask_to_sold_factor if ask else None
         if self.sold_register is not None:
             med, n = self.sold_register.median(watch["name"], 1)
             st = self.sold_register.sell_through(watch["name"])
-            st_txt = f", only {st * 100:.0f}% of listings actually sell" if st is not None and st < 0.5 else ""
+            st_txt = tx["st_low"].format(p=st * 100) if st is not None and st < 0.5 else ""
             if med and n >= self.min_sold_samples:
-                self.last_reference_kind = f"real sale prices on Tradera, {n} sales{st_txt}"
+                self.last_reference_kind = tx["ref_sold"].format(n=n, st=st_txt)
                 return med, n
             if med and n >= 3:
                 ref = min(med, ask_adj) if ask_adj else med
-                self.last_reference_kind = f"only {n} Tradera sales, so the lower of those and adjusted Blocket asks"
+                self.last_reference_kind = tx["ref_few"].format(n=n)
                 return ref, n
         if ask_adj:
-            self.last_reference_kind = (f"asking prices on Blocket scaled to typical sale value "
-                                        f"({self.ask_to_sold_factor * 100:.0f}% of the ask median)")
+            self.last_reference_kind = tx["ref_ask"].format(p=self.ask_to_sold_factor * 100)
             return ask_adj, n_ask
         return None, n_ask
 
@@ -193,16 +228,15 @@ class DealFinder:
                "url": listing["url"], "kind": kind if source == "blocket" else f"{kind} ({source})"}
         self._append("alerts.csv", ALERT_FIELDS, row)
         age_min = max(0, (now_ms() - listing["posted_ms"]) / 60000) if listing.get("posted_ms") else None
-        site = {"blocket": "Blocket", "marketplace": "Facebook Marketplace"}.get(source, source)
-        msg = (f"{listing['heading']}\n{fmt_num(listing['price'], 0)} kr in {listing['location']} on {site}"
-               f"{', can be shipped' if listing['shipping'] else ''}{', buy now' if listing['buy_now'] else ''}"
-               f"{f', posted {age_min:.0f} min ago' if age_min is not None else ''}.\n"
-               f"'{watch['name']}' usually SELLS for about {fmt_num(ref, 0)} kr (basis: {self.last_reference_kind or 'reference'}), "
-               f"so this is {discount * 100:.0f}% under. "
-               f"After ~{self.selling_cost_pct:.0f}% selling costs you would keep ~{fmt_num(resale, 0)} kr = "
-               f"~{fmt_num(margin, 0)} kr margin, before transport. Check the exact model: the reference mixes all "
-               f"'{watch['name']}' listings that pass your filters.\n{listing['url']}")
-        title = (f"Deal #{row['id']}: {watch['name']} {discount * 100:.0f}% under" + (" (price drop)" if kind == "drop" else "")
+        tx = self.tx
+        site = tx.get(f"site_{source}", source)
+        msg = (f"{listing['heading']}\n" + tx["where"].format(price=fmt_num(listing['price'], 0), loc=listing['location'], site=site)
+               + (tx["ship"] if listing['shipping'] else "") + (tx["buynow"] if listing['buy_now'] else "")
+               + (tx["age"].format(m=age_min) if age_min is not None else "") + ".\n"
+               + tx["body"].format(w=watch['name'], ref=fmt_num(ref, 0), kind=self.last_reference_kind or tx["reference"], d=discount * 100,
+                                   c=self.selling_cost_pct, resale=fmt_num(resale, 0), margin=fmt_num(margin, 0))
+               + f"\n{listing['url']}")
+        title = (tx["title"].format(id=row['id'], w=watch['name'], d=discount * 100) + (tx["drop"] if kind == "drop" else "")
                  + (f" [{site}]" if source != "blocket" else ""))
         self.log(f"ALERT #{row['id']} [{watch['name']}] {listing['heading']} {listing['price']:.0f} kr vs ref {ref:.0f} "
                  f"({discount * 100:.0f}% under) {listing['url']}")
