@@ -1,1 +1,2 @@
 id,symbol,strategy,entry_time,entry_ms,entry_price,qty,cost,exit_time,exit_ms,exit_price,proceeds,pnl,pnl_pct,fees,reason,bars
+1,EVO.ST,Breakout,2026-09-09 09:02,1788937338073,851.4255,1.0,853.5541,2026-09-25 16:43,1790347437064,818.790412,816.7434,-36.8106,-4.313,4.1755,stop-loss,29
