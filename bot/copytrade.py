@@ -84,7 +84,10 @@ def wallet_trades(wallet: str, limit: int = 30) -> list[dict]:
 
 
 def fetch_by_slug(slug: str) -> dict | None:
+    """Gamma hides closed markets from the plain slug lookup, so ask again with closed=true once it is gone."""
     raw = _get(f"{GAMMA}/markets", {"slug": slug})
+    if not (isinstance(raw, list) and raw):
+        raw = _get(f"{GAMMA}/markets", {"slug": slug, "closed": "true"})
     return normalize(raw[0]) if isinstance(raw, list) and raw else None
 
 

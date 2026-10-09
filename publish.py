@@ -233,7 +233,11 @@ POLY = {
               "than the guaranteed payout. Bets are held to resolution; one tick of slippage and Polymarket's taker fee "
               "(where the market charges one) are deducted on every fill. No real orders are ever placed."),
     "backtest": ("No backtest of our own yet. The bot records a daily snapshot of every scanned market so the "
-                 "favorite-longshot bias can be measured on its own data over time (see the research command)."),
+                 "favorite-longshot bias can be measured on its own data over time (see the research command). "
+                 "Known bug, kept in the record: until 2026-10-09 the market fetch could list the same market twice, and "
+                 "the arbitrage scanner then treated it as two outcomes of one event. Every 'arbitrage' it placed before "
+                 "that date was one market bought twice, not an arbitrage, and those legs lost. The favorites bets were "
+                 "unaffected. Fixed by de-duplicating markets; the losses stay in the journal."),
 }
 
 

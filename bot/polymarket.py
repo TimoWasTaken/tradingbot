@@ -149,6 +149,7 @@ def classify(text: str) -> str:
 def fetch_active_markets(max_markets: int = 1500, log=print) -> list[dict]:
     """Active, open Yes/No markets sorted by 24h volume, normalized."""
     out: list[dict] = []
+    seen: set[str] = set()      # volume-ordered pages shift between requests, so a market can appear twice
     offset = 0
     page = 100          # the Gamma API caps a page at 100 markets
     while len(out) < max_markets:
@@ -158,7 +159,8 @@ def fetch_active_markets(max_markets: int = 1500, log=print) -> list[dict]:
             break
         for m in raw:
             n = normalize(m)
-            if n is not None:
+            if n is not None and n["id"] not in seen:
+                seen.add(n["id"])
                 out.append(n)
         if len(raw) < page:
             break
@@ -312,6 +314,11 @@ def scan_arbitrage(markets: list[dict], cfg: dict) -> list[dict]:
         if m["neg_risk"] and m["event_id"] and not m["closed"] and m["best_bid"] > 0 and m["liquidity"] >= min_liq:
             by_event.setdefault(m["event_id"], []).append(m)
     for eid, ms in by_event.items():
+        # one leg per market: a market listed twice (or two markets asking the same question) is not two outcomes
+        uniq: dict[str, dict] = {}
+        for m in ms:
+            uniq.setdefault(m["question"].strip().lower() or m["id"], m)
+        ms = list(uniq.values())
         if len(ms) < 2:
             continue
         ms = sorted(ms, key=lambda x: -x["best_bid"])
