@@ -297,7 +297,7 @@ def poly_section(f: dict) -> str:
 
 CRYPTO15 = {
     "key": "crypto15", "cfg": "config_crypto15.json", "title": "Crypto 15-minute markets: the speed test",
-    "subtitle": "Polymarket's Bitcoin and Ethereum Up-or-Down windows watched every 5 seconds against Binance. Paper since 2026-09-22.",
+    "subtitle": "Polymarket's Bitcoin and Ethereum Up-or-Down windows watched every 5 seconds against Binance. Paper 2026-09-22 to 2026-10-09, then stopped: the verdict was clear. Market prices were perfectly calibrated, and every time the model disagreed with them the market was right (35-40% win rate, -15 to -28% per dollar); the DipArb replay lost on 19,035 dips. A home computer polling public APIs has no edge here.",
     "rules": ("The bots that demonstrably profit on Polymarket trade these windows on speed: Binance moves first, Polymarket "
               "reprices later, and Polymarket now charges takers 0.07 x price x (1 - price) per share here. This test asks how "
               "much of that edge is left at home-computer speed. (1) Fair value: from the Binance move since the window opened, "
