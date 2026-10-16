@@ -5755,3 +5755,290 @@ time,ms,checked,sum_below_1,sum_below_0_99,net_positive,best_sum,best_net_pct,me
 2026-10-15 23:34:00,1792100040276,140,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
 2026-10-15 23:39:04,1792100344116,140,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
 2026-10-15 23:44:07,1792100647917,140,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-15 23:49:11,1792100951672,138,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through October 15?
+2026-10-15 23:54:15,1792101255374,138,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-15 23:59:19,1792101559096,137,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:04:22,1792101862804,136,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:09:26,1792102166512,135,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:14:30,1792102470248,135,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:19:33,1792102773981,136,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:24:06,1792103046650,137,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:29:10,1792103350797,137,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:34:14,1792103654666,137,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:39:18,1792103958447,137,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:44:22,1792104262291,138,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:49:25,1792104565936,138,0,0,0,1.001,-0.1,1.0075,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:54:29,1792104869695,138,0,0,0,1.001,-0.1,1.0085,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 00:59:33,1792105173444,137,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 01:04:37,1792105477097,137,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 01:09:40,1792105780784,137,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 01:14:44,1792106084468,136,0,0,0,1.001,-0.1,1.0085,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 01:19:48,1792106388147,136,0,0,0,1.001,-0.1,1.008,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 01:24:21,1792106661403,168,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 01:29:25,1792106965148,168,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 01:34:29,1792107269038,168,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 01:39:32,1792107572751,168,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 01:44:36,1792107876594,168,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 01:49:40,1792108180278,167,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 01:54:43,1792108483974,167,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 01:59:47,1792108787674,168,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:04:51,1792109091379,168,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:09:55,1792109395192,168,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:14:58,1792109698949,168,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:20:02,1792110002587,168,0,0,0,1.001,-0.1,1.0095,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:24:35,1792110275337,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:29:39,1792110579031,188,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:34:43,1792110883174,186,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:39:46,1792111186875,187,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:44:50,1792111490586,185,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:49:54,1792111794372,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 02:54:58,1792112098116,185,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:00:01,1792112401846,183,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:05:05,1792112705576,183,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:10:09,1792113009634,183,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:15:13,1792113313665,182,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:20:17,1792113617550,182,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:24:49,1792113889802,183,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:29:53,1792114193589,179,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:34:57,1792114497402,177,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:40:01,1792114801129,176,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:45:05,1792115105044,177,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 03:50:08,1792115408911,174,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 03:55:12,1792115712890,172,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 04:00:17,1792116017359,172,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 04:05:21,1792116321400,171,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 04:10:25,1792116625190,171,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by October 15, 2026?"
+2026-10-16 04:15:28,1792116928989,169,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:20:32,1792117232751,168,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:25:03,1792117503965,178,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:30:07,1792117807829,177,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:35:11,1792118111713,175,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:40:15,1792118415680,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:45:19,1792118719505,175,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:50:23,1792119023403,173,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 04:55:27,1792119327306,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:00:31,1792119631150,170,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:05:34,1792119934936,169,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:10:38,1792120238699,162,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:15:42,1792120542521,162,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:20:46,1792120846412,160,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:25:18,1792121118625,162,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:30:22,1792121422366,162,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:35:26,1792121726187,150,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:40:30,1792122030021,149,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:45:33,1792122333715,149,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:50:37,1792122637492,150,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 05:55:41,1792122941174,150,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:00:44,1792123244786,149,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:05:48,1792123548516,150,0,0,0,1.001,-0.1,1.0085,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:10:52,1792123852272,149,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:15:56,1792124156071,148,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:20:59,1792124459932,149,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:25:32,1792124732876,176,0,0,0,1.001,-0.1,1.0085,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:30:36,1792125036702,177,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:35:40,1792125340454,176,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:40:44,1792125644218,176,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:45:48,1792125948125,176,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:50:51,1792126251839,175,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 06:55:55,1792126555602,175,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:00:59,1792126859411,175,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:06:03,1792127163169,176,0,0,0,1.001,-0.1,1.0085,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:11:07,1792127467017,176,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:16:10,1792127770972,176,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:21:14,1792128074863,176,0,0,0,1.001,-0.1,1.0085,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:25:47,1792128347128,188,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:30:50,1792128650897,187,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:35:54,1792128954640,186,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:40:58,1792129258385,186,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:46:02,1792129562236,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:51:05,1792129865945,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 07:56:09,1792130169826,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:01:13,1792130473747,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:06:17,1792130777544,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:11:21,1792131081340,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:16:25,1792131385203,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:21:29,1792131689013,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:26:01,1792131961371,192,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:31:05,1792132265200,192,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:36:09,1792132569061,192,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:41:13,1792132873002,192,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:46:16,1792133176876,192,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:51:20,1792133480613,191,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 08:56:24,1792133784391,191,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:01:28,1792134088285,191,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:06:32,1792134392067,191,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:11:35,1792134695862,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:16:39,1792134999633,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:21:43,1792135303457,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:26:15,1792135575816,191,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:31:19,1792135879631,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:36:23,1792136183486,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:41:27,1792136487197,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:46:31,1792136791064,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:51:34,1792137094875,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 09:56:38,1792137398604,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:01:42,1792137702456,188,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:06:46,1792138006289,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:11:50,1792138310119,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:16:53,1792138613978,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:21:57,1792138917770,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:26:30,1792139190026,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:31:34,1792139494170,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:36:37,1792139797920,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:41:41,1792140101731,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:46:45,1792140405560,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:51:49,1792140709369,188,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 10:56:53,1792141013199,188,0,0,0,1.001,-0.1,1.0095,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:01:57,1792141317060,187,0,0,0,1.001,-0.1,1.008,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:07:00,1792141620745,186,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:12:04,1792141924484,186,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:17:08,1792142228288,186,0,0,0,1.001,-0.1,1.009,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:22:12,1792142532131,186,0,0,0,1.001,-0.1,1.007,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:26:44,1792142804417,190,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:31:48,1792143108276,189,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:36:52,1792143412145,188,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:41:55,1792143715968,187,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:46:59,1792144019735,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:52:03,1792144323574,184,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 11:57:07,1792144627455,185,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:02:11,1792144931424,182,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:07:15,1792145235412,182,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:12:19,1792145539240,180,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:17:23,1792145843282,179,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:22:27,1792146147039,179,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:26:58,1792146418619,181,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:32:02,1792146722406,181,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:37:06,1792147026188,181,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:42:10,1792147330141,181,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:47:14,1792147634058,181,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:52:17,1792147937926,181,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 12:57:21,1792148241727,179,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:02:25,1792148545547,176,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:07:29,1792148849675,175,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:12:33,1792149153495,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:17:37,1792149457192,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:22:40,1792149760924,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:27:13,1792150033220,177,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:32:17,1792150337419,176,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:37:21,1792150641132,176,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:42:24,1792150944811,176,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:47:28,1792151248594,175,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:52:32,1792151552336,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 13:57:36,1792151856098,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:02:39,1792152159822,173,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:07:43,1792152463547,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:12:47,1792152767230,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:17:51,1792153071008,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:22:55,1792153375023,173,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:27:27,1792153647635,176,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:32:31,1792153951338,174,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:37:35,1792154255677,175,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:42:39,1792154559420,173,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:47:43,1792154863227,173,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:52:47,1792155167079,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 14:57:50,1792155470769,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:02:54,1792155774511,170,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:07:58,1792156078351,170,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:13:02,1792156382106,170,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:18:05,1792156685985,170,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:23:09,1792156989893,169,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:27:41,1792157261960,178,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:32:45,1792157565808,173,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:37:49,1792157869642,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:42:53,1792158173390,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:47:57,1792158477443,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:53:01,1792158781362,171,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 15:58:05,1792159085244,171,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:03:09,1792159389506,171,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:08:13,1792159693615,171,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:13:17,1792159997699,171,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:18:21,1792160301576,171,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:23:25,1792160605443,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:27:55,1792160875933,176,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:32:59,1792161179800,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:38:03,1792161483557,172,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:43:07,1792161787457,170,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:48:11,1792162091399,169,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:53:15,1792162395355,166,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 16:58:19,1792162699171,166,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:03:23,1792163003042,166,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:08:26,1792163306809,167,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:13:30,1792163610601,165,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:18:34,1792163914270,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:23:38,1792164218085,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:28:10,1792164490140,165,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:33:14,1792164794022,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:38:17,1792165097819,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:43:21,1792165401532,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:48:25,1792165705236,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:53:28,1792166008925,159,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 17:58:32,1792166312703,157,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:03:36,1792166616401,155,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:08:40,1792166920114,151,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:13:43,1792167223815,151,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:18:47,1792167527680,151,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:23:51,1792167831342,151,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:28:25,1792168105098,170,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:33:28,1792168408742,169,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:38:32,1792168712451,168,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:43:36,1792169016177,168,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:48:40,1792169320242,167,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:53:43,1792169623920,166,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 18:58:47,1792169927615,166,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 19:03:51,1792170231643,166,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through October 18?
+2026-10-16 19:08:55,1792170535367,165,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 19:13:59,1792170839056,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 19:19:03,1792171143885,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 19:24:07,1792171447659,163,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 19:28:39,1792171719028,177,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 19:33:42,1792172022782,177,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 19:38:46,1792172326483,177,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 19:43:50,1792172630263,176,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 17?
+2026-10-16 19:48:54,1792172934138,176,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 17?
+2026-10-16 19:53:57,1792173237873,174,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 19:59:01,1792173541537,173,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:04:05,1792173845268,173,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:09:09,1792174149187,173,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:14:13,1792174453127,171,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 17?
+2026-10-16 20:19:16,1792174756876,171,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:24:20,1792175060562,169,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:28:53,1792175333585,172,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:33:57,1792175637367,171,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:39:01,1792175941155,169,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:44:04,1792176244910,168,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:49:08,1792176548850,167,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:54:12,1792176852721,166,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 20:59:16,1792177156475,165,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 21:04:20,1792177460145,164,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 21:09:23,1792177763877,165,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 21:14:27,1792178067595,162,0,0,0,1.001,-0.1,1.01,Trump out as President before 2027?
+2026-10-16 21:19:31,1792178371247,161,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 17?
+2026-10-16 21:24:35,1792178675069,160,0,0,0,1.001,-0.1,1.01,Israel x Iran ceasefire continues through October 18?
+2026-10-16 21:29:07,1792178947530,160,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 16?
+2026-10-16 21:34:11,1792179251940,159,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 21:39:15,1792179555793,159,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 21:44:19,1792179859485,156,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 21:49:23,1792180163120,155,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 21:54:26,1792180466799,155,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 21:59:30,1792180770580,153,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 22:04:34,1792181074230,152,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 22:09:38,1792181378268,152,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 22:14:42,1792181682018,152,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 22:19:45,1792181985677,151,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 22:24:49,1792182289360,146,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 22:29:22,1792182562448,150,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 16?
+2026-10-16 22:34:26,1792182866169,138,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 16?
+2026-10-16 22:39:29,1792183169898,138,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-10-16 22:44:33,1792183473622,137,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-10-16 22:49:37,1792183777267,134,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 16?
+2026-10-16 22:54:40,1792184080958,133,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 16?
+2026-10-16 22:59:44,1792184384623,127,0,0,0,1.001,-0.1,1.01,US x Iran ceasefire continues through October 16?
+2026-10-16 23:04:48,1792184688347,126,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-10-16 23:09:52,1792184992043,126,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-10-16 23:14:55,1792185295659,126,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-10-16 23:19:59,1792185599255,128,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-10-16 23:25:02,1792185902881,129,0,0,0,1.001,-0.1,1.01,"US announces end of Iranian blockade by December 31, 2026?"
+2026-10-16 23:29:36,1792186176403,166,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 23:34:40,1792186480142,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 23:39:43,1792186783927,164,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
+2026-10-16 23:44:47,1792187087663,165,0,0,0,1.001,-0.1,1.01,Strait of Hormuz traffic returns to normal by October 31?
