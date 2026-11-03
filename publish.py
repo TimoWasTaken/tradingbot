@@ -439,6 +439,12 @@ def build(pub: dict) -> Path:
         "or sell anything. Backtest figures are hypothetical and were computed after the fact; they are labelled as such. Past "
         "results, simulated or real, do not predict future results. The author may personally hold some of the assets mentioned. "
         "Trading involves risk of loss; do your own research and never trade money you cannot afford to lose.</div>",
+        "<div class='verdict'><b>Project closed 2026-11-03.</b> All bots were stopped on this date and this page is no longer updated. "
+        "Eight weeks of paper trading, in one line: the only strategy that beat its benchmark was buying Polymarket favorites "
+        "(19 bets, 19 won, about +4% per bet), and it is too small to live on. The crypto and stock bots lost less than the "
+        "market but still lost; fund rotation followed the market down; same-market arbitrage never existed (0 sightings in "
+        "10,435 order-book checks); the 15-minute crypto model and the copy-trading of leaderboard wallets lost heavily; sports "
+        "arbitrage existed a few times a week at under 2%. Two of our own bugs are documented below. The journals stay published as they are.</div>"
         "<div class='verdict ok'><b>Honest summary so far.</b> In every backtest, simply buying and holding the index beat the "
         "bots. The bots' value, if any, lies in discipline, defined risk and smaller drawdowns, not in higher returns. The fund "
         "rotation bot is the one exception where the trade-off is interesting: roughly index-like returns with less than half "
